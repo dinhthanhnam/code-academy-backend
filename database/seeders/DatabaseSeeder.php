@@ -20,6 +20,20 @@ class DatabaseSeeder extends Seeder
             'name' => 'tech',
             'email' => 'tech@example.com',
             'password' => Hash::make('tech1234'),
+            'role' => 'technician',
         ]);
+        User::factory()->create([
+            'name' => 'lecturer',
+            'email' => 'lecturer@example.com',
+            'password' => Hash::make('lecturer1234'),
+            'role' => 'lecturer',
+        ]);
+        User::factory()->create([
+            'name' => 'student',
+            'email' => 'student@example.com',
+            'password' => Hash::make('student1234'),
+            'role' => 'student',
+        ]);
+        $this->call(ClassSeeder::class);
     }
 }

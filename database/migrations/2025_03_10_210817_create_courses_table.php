@@ -16,7 +16,8 @@ return new class extends Migration
             $table->string('course_code')->unique(); // Ví dụ: CS101
             $table->string('name'); // Tên môn học, ví dụ: Lập trình cơ bản
             $table->text('description')->nullable();
-            $table->string('slug');
+            $table->date('start_date');
+            $table->string('slug')->unique();
             $table->timestamps();
         });
     }

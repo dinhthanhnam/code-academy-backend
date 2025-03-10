@@ -13,9 +13,11 @@ return new class extends Migration
     {
         Schema::create('problems', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('course_id')->constrained('courses')->onDelete('cascade');
             $table->string('title'); // Tên bài tập
             $table->text('description'); // Mô tả bài tập
+            $table->enum('level', ['basic', 'intermediate', 'advanced'])->nullable();
+            $table->enum('topic', ['arrays', 'strings', 'recursion', 'sorting', 'searching', 'dp', 'graphs', 'trees'])->nullable();
+            $table->boolean('is_free')->default(false);
             $table->integer('time_limit'); // Giới hạn thời gian (giây)
             $table->integer('memory_limit'); // Giới hạn bộ nhớ (MB)
             $table->timestamps();

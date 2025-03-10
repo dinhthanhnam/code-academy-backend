@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('class_code')->unique(); // Ví dụ: CNTT-K45
             $table->string('name'); // Tên lớp, ví dụ: Công nghệ thông tin K45
+            $table->string('slug')->unique();
             $table->timestamps();
         });
     }
