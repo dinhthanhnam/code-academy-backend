@@ -14,8 +14,7 @@ Route::post('/logout', [AuthController::class, "logout"])
 Route::get('/auth/check', function (Request $request) {
     if (Auth::check()) {
         return response()->json([
-            'authenticated' => true,
-            'user' => Auth::user()
+            'authenticated' => true
         ]);
     }
 
