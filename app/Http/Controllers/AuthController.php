@@ -4,14 +4,15 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
-    private function makeCookie($token)
+    private function makeCookie($token, $name)
     {
-        return Cookie::make('token', $token, 60 * 24 * 7, '/', null, false, true, false, 'Strict');
+        return Cookie::make($name, $token, 60 * 24 * 7, '/', null, false, true, false, 'Strict');
     }
     public function register(Request $request)
     {
@@ -19,8 +20,7 @@ class AuthController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|string|max:255|email|unique:users,email',
             'password' => 'required|string|max:255|min:8|confirmed',
-        ],
-        [
+        ], [
             'name.required' => 'Vui lòng nhập tên',
             'email.required' => 'Vui lòng nhập email',
             'email.email' => 'Email không đúng định dạng',
@@ -30,16 +30,36 @@ class AuthController extends Controller
             'password.confirmed' => 'Mật khẩu không trùng khớp',
         ]);
 
-        $user = User::create($data);
+        $user = User::create([
+            'name' => $data['name'],
+            'email' => $data['email'],
+            'password' => Hash::make($data['password']),
+        ]);
 
-        $cookie = $this->makeCookie($user->createToken("auth_token_$user->email")->plainTextToken);
+        // Đăng nhập tự động sau khi đăng ký
+        Auth::login($user);
+        // Regenerate session để phòng chống session fixation
+        $request->session()->regenerate();
 
-        return response()->json(['message' => 'Đăng ký thành công!'], 200, [], JSON_UNESCAPED_UNICODE)->cookie($cookie);
+        $accessToken = $user->createToken('accessToken', ['*'], now()->addMinutes(60))->plainTextToken;
+
+        // Tạo Refresh Token (Hết hạn sau 7 ngày)
+        $refreshToken = $user->createToken('refreshToken', ['refresh'], now()->addDays(7))->plainTextToken;
+
+        // Lưu vào cookie
+        $accessCookie = cookie('accessToken', $accessToken, 60, '/', null, false, true, false, 'Lax');
+        $refreshCookie = cookie('refreshToken', $refreshToken, 60 * 24 * 7, '/', null, false, true, false, 'Lax');
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Đăng ký thành công!'
+        ])->withCookie($accessCookie)->withCookie($refreshCookie);
     }
+
 
     public function login(Request $request)
     {
-        $request->validate([
+        $credentials = $request->validate([
             'email' => 'required|string|max:255|email',
             'password' => 'required|string|max:255|min:8',
         ], [
@@ -49,24 +69,42 @@ class AuthController extends Controller
             'password.min' => 'Mật khẩu phải có ít nhất 8 ký tự',
         ]);
 
-        $user = User::where('email', $request->email)->first();
+        if (Auth::attempt($credentials)) {
+            // Nếu đăng nhập thành công, regenerate session
+            $request->session()->regenerate();
+            $user = Auth::user();
+            $accessToken = $user->createToken('accessToken', ['*'], now()->addMinutes(60))->plainTextToken;
+            // Tạo Refresh Token (Hết hạn sau 7 ngày)
+            $refreshToken = $user->createToken('refreshToken', ['refresh'], now()->addDays(7))->plainTextToken;
+            // Lưu vào cookie
+            $accessCookie = cookie('accessToken', $accessToken, 60, '/', null, false, true, false, 'Lax');
+            $refreshCookie = cookie('refreshToken', $refreshToken, 60 * 24 * 7, '/', null, false, true, false, 'Lax');
 
-        if (!$user || !Hash::check($request->password, $user->password)) {
-            return response()->json(['message' => "Thông tin đăng nhập sai!"], 401, [], JSON_UNESCAPED_UNICODE);
+            return response()->json([
+                'success' => true,
+                'message' => 'Đăng nhập thành công!'
+            ],200, [],JSON_UNESCAPED_UNICODE)->withCookie($accessCookie)->withCookie($refreshCookie);
         }
 
-        $cookie = $this->makeCookie($user->createToken("auth_token_$user->email")->plainTextToken);
-
-        return response()->json(['message' => 'Đăng nhập thành công!'], 200, [], JSON_UNESCAPED_UNICODE)->cookie($cookie);
+        return response()->json([
+            'success' => false,
+            'message' => 'Thông tin đăng nhập sai!'
+        ], 401, [],JSON_UNESCAPED_UNICODE);
     }
 
     public function logout(Request $request)
     {
-        // Xóa token của thiết bị hiện tại
-        $request->user()->currentAccessToken()->delete();
+        Auth::logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+        // Xóa cookie
+        $deleteAccessCookie = cookie()->forget('accessToken');
+        $deleteRefreshCookie = cookie()->forget('refreshToken');
 
-        // Xóa cookie bằng cách đặt lại với thời gian hết hạn ngay lập tức
-        return response()->json(['message' => 'Đăng xuất thành công'], 200, [], JSON_UNESCAPED_UNICODE)
-            ->cookie(Cookie::forget('token')); // Xóa cookie
+        return response()->json(['message' => 'Đăng xuất thành công'],
+            200 , [],JSON_UNESCAPED_UNICODE)
+            ->withCookie($deleteAccessCookie)
+            ->withCookie($deleteRefreshCookie);
     }
+
 }
