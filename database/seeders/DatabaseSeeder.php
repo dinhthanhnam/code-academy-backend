@@ -29,6 +29,7 @@ class DatabaseSeeder extends Seeder
             'role' => 'lecturer',
         ]);
         $this->call(ClassSeeder::class);
+        $this->call(LecturerSeeder::class);
         $this->call(StudentSeeder::class);
         $this->call(CourseSeeder::class);
     }
