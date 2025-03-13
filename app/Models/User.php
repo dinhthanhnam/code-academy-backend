@@ -50,8 +50,15 @@ class User extends Authenticatable
         ];
     }
 
-    public function regularClass(): BelongsTo
+    public function regular_class(): BelongsTo
     {
         return $this->belongsTo(RegularClass::class, 'regular_class_id');
+    }
+
+    public function course_class(): BelongsTo
+    {
+        return $this->belongsToMany(CourseClass::class, 'course_attendant', 'user_id', 'course_class_id')
+            ->using(CourseAttendant::class)
+            ->withPivot('role');
     }
 }

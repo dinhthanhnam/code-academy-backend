@@ -105,7 +105,7 @@ class CourseSeeder extends Seeder
                         'slug' => $slug,
                     ]);
 
-                    $students_model = $regular_class_model->students; // Quan hệ hasMany đã định nghĩa
+                    $students_model = $regular_class_model->regular_students; // Quan hệ hasMany đã định nghĩa
                     foreach ($students_model as $student) {
                         CourseAttendant::create([
                             'course_class_id' => $course_class_model->id,

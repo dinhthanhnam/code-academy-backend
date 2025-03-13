@@ -13,11 +13,11 @@ class RegularClass extends Model
         return $this->hasMany(User::class, 'regular_class_id');
     }
 
-    public function students()
+    public function regular_students()
     {
         return $this->hasMany(User::class, 'regular_class_id')->where('role', 'student');
     }
-    public function lecturer()
+    public function regular_lecturer()
     {
         return $this->hasOne(User::class, 'regular_class_id')->where('role', 'lecturer');
     }

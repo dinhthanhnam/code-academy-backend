@@ -22,6 +22,18 @@ class CourseClass extends Model
 
     public function attendants()
     {
-        return $this->hasMany(CourseAttendant::class, 'course_class_id');
+        return $this->belongsToMany(User::class, 'course_attendant', 'course_class_id', 'user_id')
+            ->using(CourseAttendant::class)
+            ->withPivot('role');
+    }
+
+    public function students()
+    {
+        return $this->attendants()->wherePivot('role', 'student');
+    }
+
+    public function lecturer()
+    {
+        return $this->attendants()->wherePivot('role', 'lecturer');
     }
 }
