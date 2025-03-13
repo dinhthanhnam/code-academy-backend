@@ -10,10 +10,10 @@ use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
-    private function makeCookie($token, $name)
-    {
-        return Cookie::make($name, $token, 60 * 24 * 7, '/', null, false, true, false, 'Strict');
-    }
+//    private function makeCookie($token, $name)
+//    {
+//        return Cookie::make($name, $token, 60 * 24 * 7, '/', null, false, true, false, 'Strict');
+//    }
     public function register(Request $request)
     {
         $data = $request->validate([

@@ -14,9 +14,11 @@ return new class extends Migration
         Schema::create('course_problem', function (Blueprint $table) {
             $table->id();
             $table->foreignId('course_id')->constrained('courses')->onDelete('cascade');
+            $table->foreignId('course_class_id')->nullable()->constrained('course_classes')->onDelete('cascade');
             $table->foreignId('problem_id')->constrained('problems')->onDelete('cascade');
             $table->integer('week_number');
             $table->boolean('is_hard_deadline')->default(false);
+            $table->boolean('is_active')->default(true);
             $table->timestamp('deadline')->nullable(); // Hạn nộp bài cho bài tập regular
             $table->timestamps();
         });
