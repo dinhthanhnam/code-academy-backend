@@ -11,12 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('courses', function (Blueprint $table) {
+        Schema::create('course_classes', function (Blueprint $table) {
             $table->id();
-            $table->string('course_code')->unique(); // Ví dụ: CS101
-            $table->string('name'); // Tên môn học, ví dụ: Lập trình cơ bản
+            $table->string('assigned_regular_class_id');
+            $table->string('course_class_code')->unique(); // Ví dụ: CS101
+            $table->string('name');
             $table->text('description')->nullable();
-            $table->date('start_date');
+            $table->dateTime('start_date');
+            $table->integer('course_id');
             $table->string('slug')->unique();
             $table->timestamps();
         });
