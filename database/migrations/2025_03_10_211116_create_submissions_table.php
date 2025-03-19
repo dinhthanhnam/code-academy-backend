@@ -19,7 +19,7 @@ return new class extends Migration
         Schema::create('submissions', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
-            $table->foreignId('problem_id')->constrained('problems')->onDelete('cascade');
+            $table->foreignId('exercise_id')->constrained('exercises')->onDelete('cascade');
             $table->foreignId('course_id')->nullable()->constrained('courses')->onDelete('cascade');
             $table->text('source_code'); // Mã nguồn sinh viên nộp
             $table->string('language'); // Ngôn ngữ lập trình (ví dụ: python, java)

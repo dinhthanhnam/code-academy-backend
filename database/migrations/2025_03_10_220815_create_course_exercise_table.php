@@ -11,11 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('course_problem', function (Blueprint $table) {
+        Schema::create('course_exercise', function (Blueprint $table) {
             $table->id();
             $table->foreignId('course_id')->constrained('courses')->onDelete('cascade');
             $table->foreignId('course_class_id')->nullable()->constrained('course_classes')->onDelete('cascade');
-            $table->foreignId('problem_id')->constrained('problems')->onDelete('cascade');
+            $table->foreignId('exercise_id')->constrained('exercises')->onDelete('cascade');
             $table->integer('week_number');
             $table->boolean('is_hard_deadline')->default(false);
             $table->boolean('is_active')->default(true);

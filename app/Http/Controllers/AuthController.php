@@ -41,19 +41,19 @@ class AuthController extends Controller
         // Regenerate session để phòng chống session fixation
         $request->session()->regenerate();
 
-        $accessToken = $user->createToken('accessToken', ['*'], now()->addMinutes(60))->plainTextToken;
-
-        // Tạo Refresh Token (Hết hạn sau 7 ngày)
-        $refreshToken = $user->createToken('refreshToken', ['refresh'], now()->addDays(7))->plainTextToken;
-
-        // Lưu vào cookie
-        $accessCookie = cookie('accessToken', $accessToken, 60, '/', null, false, true, false, 'Lax');
-        $refreshCookie = cookie('refreshToken', $refreshToken, 60 * 24 * 7, '/', null, false, true, false, 'Lax');
+//        $accessToken = $user->createToken('accessToken', ['*'], now()->addMinutes(60))->plainTextToken;
+//
+//        // Tạo Refresh Token (Hết hạn sau 7 ngày)
+//        $refreshToken = $user->createToken('refreshToken', ['refresh'], now()->addDays(7))->plainTextToken;
+//
+//        // Lưu vào cookie
+//        $accessCookie = cookie('accessToken', $accessToken, 60, '/', null, false, true, false, 'Lax');
+//        $refreshCookie = cookie('refreshToken', $refreshToken, 60 * 24 * 7, '/', null, false, true, false, 'Lax');
 
         return response()->json([
             'success' => true,
             'message' => 'Đăng ký thành công!'
-        ])->withCookie($accessCookie)->withCookie($refreshCookie);
+        ]);
     }
 
 
@@ -73,17 +73,17 @@ class AuthController extends Controller
             // Nếu đăng nhập thành công, regenerate session
             $request->session()->regenerate();
             $user = Auth::user();
-            $accessToken = $user->createToken('accessToken', ['*'], now()->addMinutes(60))->plainTextToken;
-            // Tạo Refresh Token (Hết hạn sau 7 ngày)
-            $refreshToken = $user->createToken('refreshToken', ['refresh'], now()->addDays(7))->plainTextToken;
-            // Lưu vào cookie
-            $accessCookie = cookie('accessToken', $accessToken, 60, '/', null, false, true, false, 'Lax');
-            $refreshCookie = cookie('refreshToken', $refreshToken, 60 * 24 * 7, '/', null, false, true, false, 'Lax');
+//            $accessToken = $user->createToken('accessToken', ['*'], now()->addMinutes(60))->plainTextToken;
+//            // Tạo Refresh Token (Hết hạn sau 7 ngày)
+//            $refreshToken = $user->createToken('refreshToken', ['refresh'], now()->addDays(7))->plainTextToken;
+//            // Lưu vào cookie
+//            $accessCookie = cookie('accessToken', $accessToken, 60, '/', null, false, true, false, 'Lax');
+//            $refreshCookie = cookie('refreshToken', $refreshToken, 60 * 24 * 7, '/', null, false, true, false, 'Lax');
 
             return response()->json([
                 'success' => true,
                 'message' => 'Đăng nhập thành công!'
-            ],200, [],JSON_UNESCAPED_UNICODE)->withCookie($accessCookie)->withCookie($refreshCookie);
+            ],200, [],JSON_UNESCAPED_UNICODE);
         }
 
         return response()->json([
@@ -98,13 +98,11 @@ class AuthController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
         // Xóa cookie
-        $deleteAccessCookie = cookie()->forget('accessToken');
-        $deleteRefreshCookie = cookie()->forget('refreshToken');
+//        $deleteAccessCookie = cookie()->forget('accessToken');
+//        $deleteRefreshCookie = cookie()->forget('refreshToken');
 
         return response()->json(['message' => 'Đăng xuất thành công'],
-            200 , [],JSON_UNESCAPED_UNICODE)
-            ->withCookie($deleteAccessCookie)
-            ->withCookie($deleteRefreshCookie);
+            200 , [],JSON_UNESCAPED_UNICODE);
     }
 
 }

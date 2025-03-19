@@ -21,4 +21,4 @@ Route::get('/auth/check', function (Request $request) {
     return response()->json([
         'authenticated' => false
     ], 401);
-})->middleware(['web', 'auth']);
+})->middleware(['web']);

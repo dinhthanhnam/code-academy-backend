@@ -2,11 +2,9 @@
 
 namespace Database\Seeders;
 
-use App\Models\CourseAttendant;
 use App\Models\RegularClass;
 use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Str;
 
