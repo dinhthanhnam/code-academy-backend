@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
- * 
+ *
  *
  * @property int $id
  * @property string $class_code
@@ -36,15 +36,15 @@ class RegularClass extends Model
 {
     protected $fillable = ['class_code', 'name', 'slug'];
 
-    public function users(): HasMany
+    public function users()
     {
         return $this->hasMany(User::class, 'regular_class_id');
     }
-    public function regular_students(): HasMany
+    public function regular_students()
     {
         return $this->hasMany(User::class, 'regular_class_id')->where('role', 'student');
     }
-    public function regular_lecturer(): HasOne
+    public function regular_lecturer()
     {
         return $this->hasOne(User::class, 'regular_class_id')->where('role', 'lecturer');
     }

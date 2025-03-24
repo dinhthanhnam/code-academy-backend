@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\StudentController;
 use Illuminate\Support\Facades\Route;
 use \App\Http\Controllers\AuthController;
 Route::get('/', function () {
@@ -22,3 +23,7 @@ Route::get('/auth/check', function (Request $request) {
         'authenticated' => false
     ], 401);
 })->middleware(['web']);
+
+Route::group(['prefix' => 'api'], function () {
+    Route::get('/personal_course_classes', [StudentController::class, "personal_course_classes"]);
+});

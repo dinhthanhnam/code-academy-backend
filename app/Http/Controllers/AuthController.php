@@ -101,7 +101,10 @@ class AuthController extends Controller
 //        $deleteAccessCookie = cookie()->forget('accessToken');
 //        $deleteRefreshCookie = cookie()->forget('refreshToken');
 
-        return response()->json(['message' => 'Đăng xuất thành công'],
+        return response()->json([
+            'sucess' => true,
+            'message' => 'Đăng xuất thành công'
+        ],
             200 , [],JSON_UNESCAPED_UNICODE);
     }
 

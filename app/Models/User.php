@@ -5,13 +5,14 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use \Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
- * 
+ *
  *
  * @property int $id
  * @property string $name
@@ -84,12 +85,12 @@ class User extends Authenticatable
         ];
     }
 
-    public function regular_class(): BelongsTo
+    public function regular_class()
     {
         return $this->belongsTo(RegularClass::class, 'regular_class_id');
     }
 
-    public function course_class(): BelongsTo
+    public function course_class()
     {
         return $this->belongsToMany(CourseClass::class, 'course_attendant', 'user_id', 'course_class_id')
             ->using(CourseAttendant::class)
