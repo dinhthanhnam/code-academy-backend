@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
 class StudentController extends Controller
 {
-    public function personal_course_classes(Request $request)
+    public function personal_course_classes(Request $request): JsonResponse
     {
         if (!$request->user()) {
             return response()->json([
@@ -22,9 +23,9 @@ class StudentController extends Controller
         // Nếu cần định dạng lại dữ liệu
         $formattedCourses = $courses->map(function ($course) {
             return [
-                'id' => Hash::make($course->slug . rand(10 , 99)), // Ép kiểu thành string để khớp với frontend
+                'id' => Hash::make($course->slug . rand(10 , 99)),
                 'name' => $course->name,
-                'path' => "/" . $course->slug, // Đường dẫn động
+                'path' => "/" . $course->slug,
             ];
         });
 

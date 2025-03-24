@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cookie;
@@ -14,7 +15,7 @@ class AuthController extends Controller
 //    {
 //        return Cookie::make($name, $token, 60 * 24 * 7, '/', null, false, true, false, 'Strict');
 //    }
-    public function register(Request $request)
+    public function register(Request $request): JsonResponse
     {
         $data = $request->validate([
             'name' => 'required|string|max:255',
@@ -57,7 +58,7 @@ class AuthController extends Controller
     }
 
 
-    public function login(Request $request)
+    public function login(Request $request): JsonResponse
     {
         $credentials = $request->validate([
             'email' => 'required|string|max:255|email',
@@ -83,16 +84,16 @@ class AuthController extends Controller
             return response()->json([
                 'success' => true,
                 'message' => 'Đăng nhập thành công!'
-            ],200, [],JSON_UNESCAPED_UNICODE);
+            ]);
         }
 
         return response()->json([
             'success' => false,
             'message' => 'Thông tin đăng nhập sai!'
-        ], 401, [],JSON_UNESCAPED_UNICODE);
+        ], 401);
     }
 
-    public function logout(Request $request)
+    public function logout(Request $request): JsonResponse
     {
         Auth::logout();
         $request->session()->invalidate();
@@ -104,8 +105,16 @@ class AuthController extends Controller
         return response()->json([
             'sucess' => true,
             'message' => 'Đăng xuất thành công'
-        ],
-            200 , [],JSON_UNESCAPED_UNICODE);
+        ]);
+    }
+
+    public function personal_role(Request $request): JsonResponse
+    {
+        if(!Auth::check())
+            return response()->json('Lấy vai trò thất bại', 401);
+        return response()->json([
+            'role' => Auth::user()->role
+        ]);
     }
 
 }
