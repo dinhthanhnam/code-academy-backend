@@ -39,6 +39,10 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|CourseClass whereSlug($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|CourseClass whereStartDate($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|CourseClass whereUpdatedAt($value)
+ * @property-read Collection<int, \App\Models\Exercise> $all_exercises
+ * @property-read int|null $all_exercises_count
+ * @property-read Collection<int, \App\Models\Exercise> $exercises
+ * @property-read int|null $exercises_count
  * @mixin \Eloquent
  */
 class CourseClass extends Model
@@ -74,14 +78,14 @@ class CourseClass extends Model
         return $this->attendants()->wherePivot('role', 'lecturer');
     }
 
-    public function problems(): BelongsToMany
+    public function exercises(): BelongsToMany
     {
         return $this->belongsToMany(Exercise::class, 'course_exercise', 'course_class_id', 'exercise_id')
             ->using(CourseExercise::class)
             ->withPivot(['week_number', 'deadline', 'is_hard_deadline', 'is_active']);
     }
 
-    public function all_problems()
+    public function all_exercises()
     {
         return $this->belongsToMany(Exercise::class, 'course_exercise', 'course_class_id', 'exercise_id')
             ->using(CourseExercise::class)

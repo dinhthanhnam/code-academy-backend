@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CourseController;
 use App\Http\Controllers\StudentController;
 use Illuminate\Support\Facades\Route;
 use \App\Http\Controllers\AuthController;
@@ -22,9 +23,13 @@ Route::get('/auth/check', function (Request $request) {
     return response()->json([
         'authenticated' => false
     ], 401);
-})->middleware(['web']);
+})->middleware('web');
 
 Route::group(['prefix' => 'api'], function () {
     Route::get('/personal_role', [AuthController::class, 'personal_role']);
     Route::get('/personal_course_classes', [StudentController::class, 'personal_course_classes']);
 });
+
+Route::group(['prefix' => 'admin'], function () {
+    Route::apiResource('course', CourseController::class);
+})->middleware('admin');

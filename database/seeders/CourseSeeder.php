@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Conversation;
 use App\Models\CourseAttendant;
 use App\Models\User;
 use Illuminate\Database\Seeder;
@@ -80,6 +81,96 @@ class CourseSeeder extends Seeder
                     ],
                 ],
             ],
+            [
+                'course_code' => 'IS22A',
+                'name' => 'Cơ sở lập trình',
+                'course_classes' => [
+                    [
+                        'assigned_regular_class' => 'K24CNTTA',
+                        'course_class_code' => 'IS22A01',
+                        'name' => 'K24CNTTA - IS22A',
+                        'description' => 'Lớp Cơ sở lập trình K24CNTTA - IS22A',
+                        'lecturer' => 'Nguyễn Ngọc Thuỵ',
+                        'start_date' => '2025-03-16',
+                    ],
+                    [
+                        'assigned_regular_class' => 'K24HTTTA',
+                        'course_class_code' => 'IS22A02',
+                        'name' => 'K24HTTTA - IS22A',
+                        'description' => 'Lớp Cơ sở lập trình K24HTTTA - IS22A',
+                        'lecturer' => 'Nguyễn Ngọc Thuỵ',
+                        'start_date' => '2025-03-16',
+                    ],
+                    [
+                        'assigned_regular_class' => 'K24HTTTB',
+                        'course_class_code' => 'IS22A03',
+                        'name' => 'K24HTTTB - IS22A',
+                        'description' => 'Lớp Cơ sở lập trình K24HTTTB - IS22A',
+                        'lecturer' => 'Nguyễn Ngọc Thuỵ',
+                        'start_date' => '2025-03-16',
+                    ],
+                ],
+            ],
+            [
+                'course_code' => 'IS28A',
+                'name' => 'Lập trình nâng cao với C',
+                'course_classes' => [
+                    [
+                        'assigned_regular_class' => 'K24CNTTA',
+                        'course_class_code' => 'IS28A01',
+                        'name' => 'K24CNTTA - IS28A',
+                        'description' => 'Lập trình nâng cao với C K24CNTTA - IS28A',
+                        'lecturer' => 'Lê Hùng',
+                        'start_date' => '2025-03-16',
+                    ],
+                    [
+                        'assigned_regular_class' => 'K24HTTTA',
+                        'course_class_code' => 'IS28A02',
+                        'name' => 'K24HTTTA - IS28A',
+                        'description' => 'Lập trình nâng cao với C K24HTTTA - IS28A',
+                        'lecturer' => 'Lê Hùng',
+                        'start_date' => '2025-03-16',
+                    ],
+                    [
+                        'assigned_regular_class' => 'K24HTTTB',
+                        'course_class_code' => 'IS28A03',
+                        'name' => 'K24HTTTB - IS28A',
+                        'description' => 'Lập trình nâng cao với C K24HTTTB - IS28A',
+                        'lecturer' => 'Lê Hùng',
+                        'start_date' => '2025-03-16',
+                    ],
+                ],
+            ],
+            [
+                'course_code' => 'IS29A',
+                'name' => 'Lập trình nâng cao với C++',
+                'course_classes' => [
+                    [
+                        'assigned_regular_class' => 'K24CNTTA',
+                        'course_class_code' => 'IS29A01',
+                        'name' => 'K24CNTTA - IS29A',
+                        'description' => 'Lập trình nâng cao với C++ K24CNTTA - IS29A',
+                        'lecturer' => 'Lê Hùng',
+                        'start_date' => '2025-03-16',
+                    ],
+                    [
+                        'assigned_regular_class' => 'K24HTTTA',
+                        'course_class_code' => 'IS29A02',
+                        'name' => 'K24HTTTA - IS29A',
+                        'description' => 'Lập trình nâng cao với C++ K24HTTTA - IS29A',
+                        'lecturer' => 'Lê Hùng',
+                        'start_date' => '2025-03-16',
+                    ],
+                    [
+                        'assigned_regular_class' => 'K24HTTTB',
+                        'course_class_code' => 'IS29A03',
+                        'name' => 'K24HTTTB - IS29A',
+                        'description' => 'Lập trình nâng cao với C++ K24HTTTB - IS29A',
+                        'lecturer' => 'Lê Hùng',
+                        'start_date' => '2025-03-16',
+                    ],
+                ],
+            ],
         ];
 
         foreach ($courses as $course) {
@@ -119,6 +210,11 @@ class CourseSeeder extends Seeder
                         'course_class_id' => $course_class_model->id,
                         'user_id' => $lecturers_model->id,
                         'role' => $lecturers_model->role,
+                    ]);
+                    $course_conversation_model = Conversation::create([
+                        'name' => $course_class_model->name,
+                        'course_class_id' => $course_class_model->id,
+                        'slug' => $slug,
                     ]);
                 }
             }

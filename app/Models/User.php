@@ -43,6 +43,9 @@ use \Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereRememberToken($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereRole($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereUpdatedAt($value)
+ * @property-read \App\Models\CourseAttendant|null $pivot
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\CourseClass> $course_class
+ * @property-read int|null $course_class_count
  * @mixin \Eloquent
  */
 class User extends Authenticatable
@@ -95,5 +98,24 @@ class User extends Authenticatable
         return $this->belongsToMany(CourseClass::class, 'course_attendant', 'user_id', 'course_class_id')
             ->using(CourseAttendant::class)
             ->withPivot('role');
+    }
+    public function conversations()
+    {
+        $regular_class_id = $this->regular_class_id; // Lấy regular_class_id từ user
+        $course_class_ids = $this->course_class()->pluck('course_classes.id'); // Lấy danh sách course_class_id của user
+
+        return Conversation::where(function ($query) use ($regular_class_id, $course_class_ids) {
+            if ($regular_class_id) {
+                $query->whereHas('regular_class', function ($q) use ($regular_class_id) {
+                    $q->where('id', $regular_class_id);
+                });
+            }
+
+            if ($course_class_ids->isNotEmpty()) {
+                $query->orWhereHas('course_class', function ($q) use ($course_class_ids) {
+                    $q->whereIn('id', $course_class_ids);
+                });
+            }
+        })->get();
     }
 }

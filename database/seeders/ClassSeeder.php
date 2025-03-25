@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Conversation;
 use App\Models\RegularClass;
 use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
@@ -15,7 +16,7 @@ class ClassSeeder extends Seeder
      */
     public function run(): void
     {
-        $classes = [
+        $regular_classes = [
             ['class_code' => 'K24TCA', 'name' => 'K24 Tài chính A'],
             ['class_code' => 'K24TCB', 'name' => 'K24 Tài chính B'],
             ['class_code' => 'K24TCC', 'name' => 'K24 Tài chính C'],
@@ -26,7 +27,7 @@ class ClassSeeder extends Seeder
             ['class_code' => 'K23CNTTA', 'name' => 'K23 Công nghệ thông tin A'],
         ];
 
-        foreach ($classes as $class) {
+        foreach ($regular_classes as $class) {
             $regular_class_model = RegularClass::create([
                 'class_code' => $class['class_code'],
                 'name' => $class['name'],
@@ -35,6 +36,11 @@ class ClassSeeder extends Seeder
             if(isset($class['regular_lecturer'])){
                 User::where('name', $class['regular_lecturer'])->update(['regular_class_id' => $regular_class_model->id]);
             }
+            $regular_conversation_model = Conversation::create([
+                'name' => $class['name'],
+                'regular_class_id' => $regular_class_model->id,
+                'slug' => Str::slug($class['class_code']),
+            ]);
         }
     }
 }
