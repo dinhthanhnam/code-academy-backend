@@ -31,5 +31,5 @@ Route::group(['prefix' => 'api'], function () {
 });
 
 Route::group(['prefix' => 'admin'], function () {
-    Route::apiResource('course', CourseController::class);
-})->middleware('admin');
+    Route::apiResource('course', CourseController::class)->middleware('admin');
+});
