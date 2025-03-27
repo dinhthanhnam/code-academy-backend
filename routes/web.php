@@ -1,9 +1,13 @@
 <?php
 
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CourseController;
+use App\Http\Controllers\CRUDController\CourseController as CourseCRUDController;
+use App\Http\Controllers\CRUDController\CourseClassController as CourseClassCRUDController;
+use App\Http\Controllers\LecturerController;
 use App\Http\Controllers\StudentController;
 use Illuminate\Support\Facades\Route;
-use \App\Http\Controllers\AuthController;
+
 Route::get('/', function () {
     return view('welcome');
 });
@@ -28,8 +32,14 @@ Route::get('/auth/check', function (Request $request) {
 Route::group(['prefix' => 'api'], function () {
     Route::get('/personal_role', [AuthController::class, 'personal_role']);
     Route::get('/personal_course_classes', [StudentController::class, 'personal_course_classes']);
+    Route::get('/lecturer_course_classes', [LecturerController::class, 'lecturer_course_classes']);
 });
 
 Route::group(['prefix' => 'admin'], function () {
-    Route::apiResource('course', CourseController::class)->middleware('admin');
+    Route::apiResource('course', CourseCRUDController::class)->middleware('admin');
+    Route::apiResource('course-class', CourseClassCRUDController::class)->middleware('admin');
+});
+
+Route::group(['prefix' => 'course'], function () {
+    Route::get('course-classes', [CourseController::class, 'get_course_classes_by_course_id'])->middleware('admin');
 });

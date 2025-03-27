@@ -2,55 +2,33 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Resources\CourseResource;
+use App\Http\Resources\CourseClassResource;
 use App\Models\Course;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 class CourseController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        return CourseResource::collection(Course::paginate(20));
-    }
+    public function get_course_classes_by_course_id(Request $request) {
+        $course_id = $request->has('course_id');
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        $validated = $request->validate([
-            'course_code' => 'required|string|max:255|unique:courses',
-            'name' => 'required|string|max:255',
-        ]);
+        if(!$course_id) return response()->json([
+            'message' => 'Không tìm được khoá học'
+        ], Response::HTTP_NOT_FOUND);
 
-        $course = Course::create($validated);
-        return new CourseResource($course);
-    }
+        // Lấy danh sách lớp học
+        $course_classes = Course::find($course_id)->course_classes();
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
+        // Nếu có tham số tìm kiếm, áp dụng điều kiện
+        if ($request->has('search')) {
+            $search = $request->input('search');
+            $course_classes->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%$search%")
+                    ->orWhere('course_class_code', 'like', "%$search%");
+            });
+        }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        // Trả về danh sách lớp học theo pagination
+        return CourseClassResource::collection($course_classes->paginate(7));
     }
 }

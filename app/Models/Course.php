@@ -36,7 +36,7 @@ class Course extends Model
 
     public function course_classes(): HasMany
     {
-        return $this->hasMany(CourseClass::class, 'assigned_regular_class_id');
+        return $this->hasMany(CourseClass::class, 'course_id');
     }
     public function predefined_exercises(): BelongsToMany
     {

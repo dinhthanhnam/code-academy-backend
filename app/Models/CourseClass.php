@@ -43,6 +43,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
  * @property-read int|null $all_exercises_count
  * @property-read Collection<int, \App\Models\Exercise> $exercises
  * @property-read int|null $exercises_count
+ * @property int $active
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CourseClass whereActive($value)
  * @mixin \Eloquent
  */
 class CourseClass extends Model

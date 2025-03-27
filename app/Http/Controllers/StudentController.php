@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
 
 class StudentController extends Controller
 {
@@ -23,7 +22,7 @@ class StudentController extends Controller
         // Nếu cần định dạng lại dữ liệu
         $formattedCourses = $courses->map(function ($course) {
             return [
-                'id' => Hash::make($course->slug . rand(10 , 99)),
+                'id' => $course->slug . rand(10 , 99),
                 'name' => $course->name,
                 'path' => "/" . $course->slug,
             ];

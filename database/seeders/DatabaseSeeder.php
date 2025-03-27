@@ -23,6 +23,7 @@ class DatabaseSeeder extends Seeder
             'role' => 'admin',
         ]);
 
+        $this->call(StaticSeeder::class);
         $this->call(LecturerSeeder::class);
         $this->call(ClassSeeder::class);
         $this->call(StudentSeeder::class);
