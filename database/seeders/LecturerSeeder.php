@@ -25,6 +25,7 @@ class LecturerSeeder extends Seeder
             User::create([
                 'name' => $lecturer['name'],
                 'email' => $lecturer['email'],
+                'identity_code' => $lecturer['email'],
                 'password' => Hash::make($lecturer['password']),
                 'role' => 'lecturer',
             ]);

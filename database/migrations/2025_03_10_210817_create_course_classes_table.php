@@ -15,11 +15,12 @@ return new class extends Migration
             $table->id();
             $table->string('assigned_regular_class_id')->nullable();
             $table->string('course_class_code')->unique(); // Ví dụ: CS101
+            $table->string('course_class_join_code')->unique()->nullable(); // Ví dụ: CS101
             $table->string('name');
             $table->text('description')->nullable();
             $table->boolean('active')->default(true);
             $table->dateTime('start_date')->nullable();
-            $table->integer('course_id');
+            $table->foreignId('course_id')->nullable()->constrained('courses');
             $table->string('slug')->unique();
             $table->timestamps();
         });

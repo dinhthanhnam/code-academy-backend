@@ -6,7 +6,9 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\CourseClassResource;
 use App\Models\CourseClass;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpFoundation\Response;
 
 class CourseClassController extends Controller
@@ -26,7 +28,7 @@ class CourseClassController extends Controller
                     ->orWhere('course_class_code', 'like', "%$search%");
             });
         }
-        return CourseClassResource::collection($query->paginate(7));
+        return CourseClassResource::collection($query->paginate(8));
     }
 
     /**
@@ -37,6 +39,7 @@ class CourseClassController extends Controller
         $validated = $request->validate([
             'course_class_code' => 'required|string|max:255|unique:courses',
             'name' => 'required|string|max:255',
+            'course_class_join_code' => 'required|string|max:255|unique:courses'
         ]);
 
         $course = CourseClass::create($validated);
@@ -50,9 +53,9 @@ class CourseClassController extends Controller
     {
         try {
             $course = CourseClass::findOrFail($id);
-            return new CourseClass($course);
+            return new CourseClassResource($course);
         } catch (ModelNotFoundException $e) {
-            return response()->json(['message' => 'Không tìm thấy học phần'], Response::HTTP_NOT_FOUND);
+            return response()->json(['message' => 'Không tìm thấy lớp học phần'], Response::HTTP_NOT_FOUND);
         }
     }
 
@@ -61,7 +64,30 @@ class CourseClassController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        try {
+            $course_class = CourseClass::findOrFail($id);
+            $validated = $request->validate([
+                'course_code' => 'sometimes|string|max:255|unique:courses,course_code,' . $id,
+                'name' => 'sometimes|string|max:255',
+            ]);
+
+            $course_class->update($validated);
+            return response()->json([
+                'message' => 'Cập nhật lớp học phần thành công',
+                'success' => true,
+                'data' => new CourseClassResource($course_class)
+            ]);
+        } catch (ModelNotFoundException $e) {
+            return response()->json([
+                'message' => 'Không tìm thấy lớp học phần',
+                'success' => false,
+            ], Response::HTTP_NOT_FOUND);
+        } catch (ValidationException $e) {
+            return response()->json([
+                'message' => 'Không tìm thấy lớp học phần',
+                'success' => false,
+            ], 422);
+        }
     }
 
     /**
@@ -69,6 +95,26 @@ class CourseClassController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        {
+            try {
+                $course_class = CourseClass::findOrFail($id);
+                $course_class->delete();
+                return response()->json(['message' => 'Xoá lớp học phần thành công', 'success' => true]);
+            } catch (ModelNotFoundException $e) {
+                return response()->json(['message' => 'Không tìm thấy lớp học phần', 'success' => false], Response::HTTP_NOT_FOUND);
+            } catch (QueryException $e) {
+                if ($e->getCode() === '23000') {
+                    return response()->json([
+                        'message' => 'Không thể xóa lớp học phần vì còn liên kết với dữ liệu khác (sinh viên/giảng viên)',
+                        'success' => false
+                    ], Response::HTTP_CONFLICT);
+                }
+
+                return response()->json([
+                    'message' => 'Lỗi cơ sở dữ liệu: ' . $e->getMessage(),
+                    'success' => false
+                ], Response::HTTP_INTERNAL_SERVER_ERROR);
+            }
+        }
     }
 }

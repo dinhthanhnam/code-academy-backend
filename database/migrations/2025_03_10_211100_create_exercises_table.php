@@ -13,12 +13,12 @@ return new class extends Migration
     {
         Schema::create('exercises', function (Blueprint $table) {
             $table->id();
-            $table->string('title'); // Tên bài tập
-            $table->text('description'); // Mô tả bài tập
+            $table->string('title');
+            $table->text('description');
             $table->enum('level', ['basic', 'intermediate', 'advanced'])->nullable();
             $table->boolean('is_free')->default(false);
-            $table->integer('time_limit'); // Giới hạn thời gian (giây)
-            $table->integer('memory_limit'); // Giới hạn bộ nhớ (MB)
+            $table->integer('time_limit');
+            $table->integer('memory_limit');
             $table->timestamps();
         });
     }

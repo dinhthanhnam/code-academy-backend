@@ -2,12 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\CourseClassResource;
+use App\Models\CourseClass;
+use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 class LecturerController extends Controller
 {
-    public function lecturer_course_classes(Request $request): JsonResponse
+    public function lecturer_course_classes(Request $request)
     {
         if (!$request->user()) {
             return response()->json([
@@ -47,5 +51,32 @@ class LecturerController extends Controller
             'message' => 'Lấy dữ liệu thành công!',
             'formatted_classes' => $formatted_classes
         ]);
+    }
+
+    public function get_course_classes_by_lecturer_id(Request $request)
+    {
+        if(!$request->has('lecturer_id')) {
+            return response()->json([
+                'message' => 'Không tìm được giảng viên',
+                'success' => false
+            ], Response::HTTP_NOT_FOUND);
+        }
+
+        $lecturer_id = $request->input('lecturer_id');
+
+        $lecturer = User::findOrFail($lecturer_id);
+
+        $course_classes = $lecturer->course_class();
+
+        // Nếu có tham số tìm kiếm, áp dụng điều kiện
+        if ($request->has('search')) {
+            $search = $request->input('search');
+            $course_classes->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%$search%")
+                    ->orWhere('course_class_code', 'like', "%$search%");
+            });
+        }
+        // Trả về danh sách lớp học theo pagination
+        return CourseClassResource::collection($course_classes->paginate(8));
     }
 }

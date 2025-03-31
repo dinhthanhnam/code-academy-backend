@@ -16,16 +16,16 @@ class StaticSeeder extends Seeder
     {
         $default_languages = [
             [
-                "name" => "C++"
+                "name" => "c_cpp"
             ],
             [
-                "name" => "C"
+                "name" => "javascript"
             ],
             [
-                "name" => "Java"
+                "name" => "java"
             ],
             [
-                "name" => "Python"
+                "name" => "python"
             ]
         ];
 
@@ -55,7 +55,7 @@ class StaticSeeder extends Seeder
                 "name" => "graphs"
             ],
             [
-                "name" => "true"
+                "name" => "tree"
             ],
         ];
 

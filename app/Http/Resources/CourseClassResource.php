@@ -16,7 +16,10 @@ class CourseClassResource extends JsonResource
     {
         return [
             'id' => $this->id,
+            'course_id' => $this->course_id,
             'course_class_code' => $this->course_class_code,
+            'course_class__join_code' => $this->course_class_join_code,
+            'assigned_regular_class_id' => $this->assigned_regular_class_id,
             'name' => $this->name,
             'description' => $this->description,
             'active' => (boolean) $this->active,

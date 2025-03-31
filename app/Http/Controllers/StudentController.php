@@ -20,7 +20,7 @@ class StudentController extends Controller
         $courses = $request->user()->course_class()->get();
 
         // Nếu cần định dạng lại dữ liệu
-        $formattedCourses = $courses->map(function ($course) {
+        $formatted_courses = $courses->map(function ($course) {
             return [
                 'id' => $course->slug . rand(10 , 99),
                 'name' => $course->name,
@@ -31,7 +31,7 @@ class StudentController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Lấy dữ liệu thành công!',
-            'personal_course_classes' => $formattedCourses
+            'personal_course_classes' => $formatted_courses
         ]);
     }
 }
