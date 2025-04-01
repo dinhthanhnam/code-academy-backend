@@ -1,6 +1,5 @@
 <?php
 
-
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
@@ -27,7 +26,8 @@ class ExerciseSeeder extends Seeder
                 ]),
                 'is_free' => true,
                 'time_limit' => 1,
-                'memory_limit' => 128
+                'memory_limit' => 128,
+                'topics' => [] // Không có topic cụ thể
             ],
             [
                 'title' => 'Kiểm tra số chẵn',
@@ -42,7 +42,8 @@ class ExerciseSeeder extends Seeder
                 ]),
                 'is_free' => true,
                 'time_limit' => 1,
-                'memory_limit' => 128
+                'memory_limit' => 128,
+                'topics' => [] // Không có topic cụ thể
             ],
             [
                 'title' => 'Tìm số lớn nhất',
@@ -57,9 +58,9 @@ class ExerciseSeeder extends Seeder
                 ]),
                 'is_free' => true,
                 'time_limit' => 1,
-                'memory_limit' => 128
+                'memory_limit' => 128,
+                'topics' => [3] // arrays
             ],
-            
             [
                 'title' => 'Số Fibonacci',
                 'description' => 'Nhập một số nguyên n và trả về số Fibonacci thứ n (bắt đầu từ n = 1, F(1) = 1, F(2) = 1).',
@@ -73,7 +74,8 @@ class ExerciseSeeder extends Seeder
                 ]),
                 'is_free' => false,
                 'time_limit' => 2,
-                'memory_limit' => 256
+                'memory_limit' => 256,
+                'topics' => [4, 7] // recursion, dp
             ],
             [
                 'title' => 'Sắp xếp mảng',
@@ -88,7 +90,8 @@ class ExerciseSeeder extends Seeder
                 ]),
                 'is_free' => false,
                 'time_limit' => 2,
-                'memory_limit' => 256
+                'memory_limit' => 256,
+                'topics' => [3, 5] // arrays, sorting
             ],
             [
                 'title' => 'Kiểm tra số nguyên tố',
@@ -103,9 +106,9 @@ class ExerciseSeeder extends Seeder
                 ]),
                 'is_free' => false,
                 'time_limit' => 2,
-                'memory_limit' => 256
+                'memory_limit' => 256,
+                'topics' => [] // Không có topic cụ thể
             ],
-            
             [
                 'title' => 'Dãy con có tổng lớn nhất',
                 'description' => 'Nhập một mảng số nguyên (dòng đầu là số phần tử n, dòng sau là n số) và trả về tổng lớn nhất của một dãy con liên tiếp.',
@@ -119,13 +122,27 @@ class ExerciseSeeder extends Seeder
                 ]),
                 'is_free' => false,
                 'time_limit' => 3,
-                'memory_limit' => 512
+                'memory_limit' => 512,
+                'topics' => [3, 7] // arrays, dp
             ],
         ];
 
-        foreach ($exercises as $exercise) {
-            Exercise::create($exercise);
+        foreach ($exercises as $exerciseData) {
+            // Tạo bài tập
+            $exercise = Exercise::create([
+                'title' => $exerciseData['title'],
+                'description' => $exerciseData['description'],
+                'level' => $exerciseData['level'],
+                'example_input' => $exerciseData['example_input'],
+                'example_output' => $exerciseData['example_output'],
+                'test_cases' => $exerciseData['test_cases'],
+                'is_free' => $exerciseData['is_free'],
+                'time_limit' => $exerciseData['time_limit'],
+                'memory_limit' => $exerciseData['memory_limit'],
+            ]);
+
+            // Gắn topics cho bài tập bằng quan hệ
+            $exercise->topics()->attach($exerciseData['topics']);
         }
     }
 }
-
