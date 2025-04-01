@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 /**
  * 
@@ -18,5 +19,16 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Topic extends Model
 {
-    //
+    protected $fillable = [
+        'name',
+    ];
+
+    /**
+     * Get the exercises associated with this topic.
+     */
+    public function exercises(): BelongsToMany
+    {
+        return $this->belongsToMany(Exercise::class, 'exercise_topic', 'topic_id', 'exercise_id')
+                    ->withTimestamps();
+    }
 }
