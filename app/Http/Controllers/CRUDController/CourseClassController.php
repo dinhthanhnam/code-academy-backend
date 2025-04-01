@@ -7,6 +7,7 @@ use App\Http\Resources\CourseClassResource;
 use App\Models\Course;
 use App\Models\CourseClass;
 use App\Models\RegularClass;
+use App\Models\User;
 use Carbon\Carbon;
 use Carbon\Exceptions\Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -45,7 +46,7 @@ class CourseClassController extends Controller
             'course_id' => 'required|max:255|exists:courses,id',
             'assigned_regular_class_id' => 'required|exists:regular_classes,id',
             'start_date' => 'required',
-            'description' => 'required'
+            'description' => 'required',
         ]);
 
         $standardized_date = $validated['start_date'] = Carbon::parse($request->input('start_date'))->format('Y-m-d H:i:s');
@@ -73,6 +74,11 @@ class CourseClassController extends Controller
             'name' => $name,
             'slug' => $slug,
         ]);
+
+        $lecturer = User::find($request->input('lecturer_id'));
+        if($lecturer) {
+            $course_class->attendants()->sync([$lecturer->id => ['role' => 'lecturer']]);
+        }
 
         return response()->json([
             'message' => 'Tạo lớp học phần thành công',
@@ -115,6 +121,11 @@ class CourseClassController extends Controller
             // Chuẩn hóa start_date nếu có trong request
             if ($request->has('start_date')) {
                 $validated['start_date'] = Carbon::parse($request->input('start_date'))->format('Y-m-d H:i:s');
+            }
+
+            $lecturer = User::find($request->input('lecturer_id'));
+            if($lecturer) {
+                $course_class->attendants()->sync([$lecturer->id => ['role' => 'lecturer']]);
             }
 
             $course_class->update($validated);

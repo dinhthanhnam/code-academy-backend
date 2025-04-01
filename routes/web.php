@@ -54,4 +54,5 @@ Route::group(['prefix' => 'lecturer', 'middleware' => 'admin'], function () {
 Route::group(['prefix' => 'option'], function () {
     Route::get('regular-class', [OptionController::class, 'regular_class']);
     Route::get('course', [OptionController::class, 'course']);
+    Route::get('lecturer', [OptionController::class, 'lecturer']);
 });

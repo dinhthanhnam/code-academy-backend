@@ -42,7 +42,7 @@ class OptionController extends Controller
 
     public function lecturer(Request $request)
     {
-        $lecturers = User::query();
+        $lecturers = User::where('role', 'lecturer');
 
         $query = $request->input('search');
         if ($query) {
