@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 /**
- * 
+ *
  *
  * @property int $id
  * @property string $assigned_regular_class_id
@@ -52,11 +52,13 @@ class CourseClass extends Model
     protected $fillable = [
         'assigned_regular_class_id',
         'course_class_code',
+        'course_class_join_code',
         'name',
         'description',
         'start_date',
         'course_id',
         'slug',
+        'active',
     ];
 
     protected $casts = [
