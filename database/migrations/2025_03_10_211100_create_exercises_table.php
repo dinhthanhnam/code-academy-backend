@@ -16,6 +16,9 @@ return new class extends Migration
             $table->string('title');
             $table->text('description');
             $table->enum('level', ['basic', 'intermediate', 'advanced'])->nullable();
+            $table->string('example_input')->nullable();
+            $table->string('example_output');
+            $table->json('test_cases');
             $table->boolean('is_free')->default(false);
             $table->integer('time_limit');
             $table->integer('memory_limit');
