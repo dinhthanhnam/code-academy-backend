@@ -3,9 +3,10 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 /**
- * 
+ *
  *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Exercise newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Exercise newQuery()
@@ -36,13 +37,15 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Exercise extends Model
 {
-    public function topics()
+    protected $fillable = ['title', 'description', 'is_free', 'level', 'time_limit', 'memory_limit'];
+
+    public function topics(): BelongsToMany
     {
-        return $this->belongsToMany(Topic::class, 'exercise_topic');
+        return $this->belongsToMany(Topic::class);
     }
 
-    public function languages()
+    public function language(): BelongsToMany
     {
-        return $this->belongsToMany(Language::class, 'exercise_language');
+        return $this->belongsToMany(Language::class);
     }
 }

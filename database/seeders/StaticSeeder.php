@@ -16,16 +16,16 @@ class StaticSeeder extends Seeder
     {
         $default_languages = [
             [
-                "name" => "c_cpp"
+                "name" => "c_cpp",
+                "judge_language_id" => 1,
             ],
             [
-                "name" => "javascript"
+                "name" => "java",
+                "judge_language_id" => 6,
             ],
             [
-                "name" => "java"
-            ],
-            [
-                "name" => "python"
+                "name" => "python",
+                "judge_language_id" => 10,
             ]
         ];
 
@@ -61,7 +61,8 @@ class StaticSeeder extends Seeder
 
         foreach ($default_languages as $language) {
         Language::create([
-            'name' => $language['name']
+            'name' => $language['name'],
+            'judge_language_id' => $language['judge_language_id']
         ]);
         }
 

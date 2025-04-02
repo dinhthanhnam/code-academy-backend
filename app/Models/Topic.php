@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 /**
- * 
+ *
  *
  * @property int $id
  * @property string $name
@@ -28,7 +28,6 @@ class Topic extends Model
      */
     public function exercises(): BelongsToMany
     {
-        return $this->belongsToMany(Exercise::class, 'exercise_topic', 'topic_id', 'exercise_id')
-                    ->withTimestamps();
+        return $this->belongsToMany(Exercise::class);
     }
 }

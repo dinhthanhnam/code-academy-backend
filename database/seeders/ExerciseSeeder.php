@@ -27,7 +27,8 @@ class ExerciseSeeder extends Seeder
                 'is_free' => true,
                 'time_limit' => 1,
                 'memory_limit' => 128,
-                'topics' => [] // Không có topic cụ thể
+                'topics' => [],
+                'language' => 1,
             ],
             [
                 'title' => 'Kiểm tra số chẵn',
@@ -43,7 +44,8 @@ class ExerciseSeeder extends Seeder
                 'is_free' => true,
                 'time_limit' => 1,
                 'memory_limit' => 128,
-                'topics' => [] // Không có topic cụ thể
+                'topics' => [],
+                'language' => 1,
             ],
             [
                 'title' => 'Tìm số lớn nhất',
@@ -59,7 +61,8 @@ class ExerciseSeeder extends Seeder
                 'is_free' => true,
                 'time_limit' => 1,
                 'memory_limit' => 128,
-                'topics' => [3] // arrays
+                'topics' => [3], // arrays
+                'language' => 1, // cpp
             ],
             [
                 'title' => 'Số Fibonacci',
@@ -75,7 +78,8 @@ class ExerciseSeeder extends Seeder
                 'is_free' => false,
                 'time_limit' => 2,
                 'memory_limit' => 256,
-                'topics' => [4, 7] // recursion, dp
+                'topics' => [4, 7], // recursion, dp
+                'language' => 1,
             ],
             [
                 'title' => 'Sắp xếp mảng',
@@ -91,7 +95,8 @@ class ExerciseSeeder extends Seeder
                 'is_free' => false,
                 'time_limit' => 2,
                 'memory_limit' => 256,
-                'topics' => [3, 5] // arrays, sorting
+                'topics' => [3, 5], // arrays, sorting
+                'language' => 1,
             ],
             [
                 'title' => 'Kiểm tra số nguyên tố',
@@ -107,7 +112,8 @@ class ExerciseSeeder extends Seeder
                 'is_free' => false,
                 'time_limit' => 2,
                 'memory_limit' => 256,
-                'topics' => [] // Không có topic cụ thể
+                'topics' => [], // Không có topic cụ thể
+                'language' => 1,
             ],
             [
                 'title' => 'Dãy con có tổng lớn nhất',
@@ -123,7 +129,8 @@ class ExerciseSeeder extends Seeder
                 'is_free' => false,
                 'time_limit' => 3,
                 'memory_limit' => 512,
-                'topics' => [3, 7] // arrays, dp
+                'topics' => [3, 7], // arrays, dp
+                'language' => 1,
             ],
         ];
 
@@ -143,6 +150,7 @@ class ExerciseSeeder extends Seeder
 
             // Gắn topics cho bài tập bằng quan hệ
             $exercise->topics()->attach($exerciseData['topics']);
+            $exercise->language()->attach($exerciseData['language']);
         }
     }
 }

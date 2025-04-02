@@ -3,9 +3,10 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 /**
- * 
+ *
  *
  * @property int $id
  * @property string $name
@@ -18,5 +19,12 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Language extends Model
 {
-    //
+    protected $fillable = [
+        'name',
+    ];
+
+    public function exercises(): BelongsToMany
+    {
+        return $this->belongsToMany(Exercise::class);
+    }
 }
