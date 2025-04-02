@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Resources\CourseClassResource;
 use App\Models\CourseClass;
 use App\Models\User;
+use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -79,4 +80,52 @@ class LecturerController extends Controller
         // Trả về danh sách lớp học theo pagination
         return CourseClassResource::collection($course_classes->paginate(8));
     }
+
+    public function assign_course_class_to_lecturer(Request $request) {
+        try {
+            $lecturer = User::findOrFail($request->input('lecturer_id'));
+
+            // Gán lớp học với role vào bảng pivot
+            $lecturer->course_class()->syncWithoutDetaching(
+                [$request->input('course_class_id') => ['role' => $lecturer->role]
+            ]);
+
+            return response()->json([
+                'message' => 'Gán lớp cho giảng viên thành công',
+                'success' => true
+            ], Response::HTTP_OK);
+        } catch (Exception $e) {
+            return response()->json([
+                'message' => 'Không thể gán lớp này cho giảng viên',
+                'success' => false
+            ], Response::HTTP_NOT_FOUND);
+        }
+    }
+
+    public function detach_course_class_from_lecturer(Request $request) {
+        try {
+            $lecturer_id = $request->input('lecturer_id');
+            $course_class_id = $request->input('course_class_id');
+
+            $lecturer = User::findOrFail($lecturer_id);
+
+            // Kiểm tra xem có bản ghi trong bảng pivot không
+            if ($lecturer->course_class()->where('course_class_id', $course_class_id)->exists()) {
+                // Gỡ bỏ mối quan hệ và xóa bản ghi pivot
+                $lecturer->course_class()->detach($course_class_id);
+            }
+
+            return response()->json([
+                'message' => 'Xoá lớp của giảng viên thành công',
+                'success' => true
+            ], Response::HTTP_OK);
+
+        } catch (Exception $e) {
+            return response()->json([
+                'message' => 'Không thể xoá lớp của giảng viên',
+                'success' => false
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
 }

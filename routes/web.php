@@ -49,10 +49,13 @@ Route::group(['prefix' => 'course' , 'middleware' => 'admin'], function () {
 
 Route::group(['prefix' => 'lecturer', 'middleware' => 'admin'], function () {
     Route::get('course-classes', [LecturerController::class, 'get_course_classes_by_lecturer_id']);
+    Route::post('assign-course', [LecturerController::class, 'assign_course_class_to_lecturer']);
+    Route::post('detach-course', [LecturerController::class, 'detach_course_class_from_lecturer']);
 });
 
 Route::group(['prefix' => 'option'], function () {
     Route::get('regular-class', [OptionController::class, 'regular_class']);
     Route::get('course', [OptionController::class, 'course']);
+    Route::get('course-class', [OptionController::class, 'course_class']);
     Route::get('lecturer', [OptionController::class, 'lecturer']);
 });
