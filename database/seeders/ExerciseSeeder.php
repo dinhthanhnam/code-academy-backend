@@ -2,6 +2,9 @@
 
 namespace Database\Seeders;
 
+use App\Models\Course;
+use App\Models\CourseClass;
+use App\Models\CourseExercise;
 use Illuminate\Database\Seeder;
 use App\Models\Exercise;
 
@@ -151,6 +154,47 @@ class ExerciseSeeder extends Seeder
             // Gắn topics cho bài tập bằng quan hệ
             $exercise->topics()->attach($exerciseData['topics']);
             $exercise->language()->attach($exerciseData['language']);
+        }
+
+        $basic_exercises = Exercise::findMany([1, 2, 3]);
+        $intermediate_exercises = Exercise::findMany([4, 5, 6, 7]);
+
+        $course_cslt = Course::where('name', 'Cơ sở lập trình')->first();
+        $course_cpp = Course::where('name', 'Lập trình nâng cao với C++')->first();
+
+        $course_classes_cslt = CourseClass::where('course_id', $course_cslt->id)->get();
+        $course_classes_cpp = CourseClass::where('course_id', $course_cpp->id)->get();
+
+        foreach($course_classes_cslt as $course_class) {
+            $index = 1;
+            foreach($basic_exercises as $exercise) {
+                $course_class->exercises()->syncWithoutDetaching([
+                    $exercise->id => [
+                        'course_id' => $course_cslt->id,
+                        'course_class_id' => $course_class->id,
+                        'week_number' => $index,
+                        'is_hard_deadline' => false,
+                        'is_active' => true,
+                        ]
+                ]);
+                $index++;
+            }
+        }
+
+        foreach($course_classes_cpp as $course_class) {
+            $index = 1;
+            foreach($intermediate_exercises as $exercise) {
+                $course_class->exercises()->syncWithoutDetaching([
+                    $exercise->id => [
+                        'course_id' => $course_cpp->id,
+                        'course_class_id' => $course_class->id,
+                        'week_number' => $index,
+                        'is_hard_deadline' => false,
+                        'is_active' => true,
+                    ]
+                ]);
+                $index++;
+            }
         }
     }
 }

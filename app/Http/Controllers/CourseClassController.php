@@ -6,6 +6,7 @@ use App\Http\Resources\CourseClassResource;
 use App\Http\Resources\ExerciseResource;
 use App\Http\Resources\UserResource;
 use App\Models\CourseClass;
+use Exception;
 use Illuminate\Http\Request;
 use Nette\Schema\ValidationException;
 use Symfony\Component\HttpFoundation\Response;
@@ -13,13 +14,9 @@ use Symfony\Component\HttpFoundation\Response;
 class CourseClassController extends Controller
 {
     // Lấy thông tin lớp học
-    public function course_class_detail(Request $request) {
+    public function course_class_detail(string $slug) {
         try {
-            $validated = $request->validate([
-                'slug' => 'required|exists:course_classes,slug'
-            ]);
-
-            $course_class = CourseClass::where('slug', $validated['slug'])->first();
+            $course_class = CourseClass::where('slug', $slug)->first();
 
             if (!$course_class) {
                 return response()->json([
@@ -29,7 +26,7 @@ class CourseClassController extends Controller
             }
 
             return new CourseClassResource($course_class);
-        } catch (ValidationException $e) {
+        } catch (Exception $e) {
             return response()->json([
                 'message' => $e->getMessage(),
                 'success' => false
@@ -37,13 +34,10 @@ class CourseClassController extends Controller
         }
     }
 
-    public function course_class_exercises(Request $request) {
+    public function course_class_exercises(string $slug) {
         try {
-            $validated = $request->validate([
-                'slug' => 'required|exists:course_classes,slug'
-            ]);
 
-            $course_class = CourseClass::where('slug', $validated['slug'])->first();
+            $course_class = CourseClass::where('slug', $slug)->first();
 
             if (!$course_class) {
                 return response()->json([
@@ -53,7 +47,7 @@ class CourseClassController extends Controller
             }
 
             return ExerciseResource::collection($course_class->exercises()->paginate(8));
-        } catch (ValidationException $e) {
+        } catch (Exception $e) {
             return response()->json([
                 'message' => $e->getMessage(),
                 'success' => false
@@ -62,13 +56,9 @@ class CourseClassController extends Controller
     }
 
 // Lấy danh sách sinh viên
-    public function course_class_students(Request $request) {
+    public function course_class_students(string $slug) {
         try {
-            $validated = $request->validate([
-                'slug' => 'required|exists:course_classes,slug'
-            ]);
-
-            $course_class = CourseClass::where('slug', $validated['slug'])->first();
+            $course_class = CourseClass::where('slug', $slug)->first();
 
             if (!$course_class) {
                 return response()->json([
@@ -78,7 +68,7 @@ class CourseClassController extends Controller
             }
 
             return UserResource::collection($course_class->students()->paginate(8));
-        } catch (ValidationException $e) {
+        } catch (Exception $e) {
             return response()->json([
                 'message' => $e->getMessage(),
                 'success' => false

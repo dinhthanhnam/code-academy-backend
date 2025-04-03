@@ -19,7 +19,8 @@ return new class extends Migration
             $table->integer('week_number');
             $table->boolean('is_hard_deadline')->default(false);
             $table->boolean('is_active')->default(true);
-            $table->timestamp('deadline')->nullable(); // Hạn nộp bài cho bài tập regular
+            $table->unique(['course_id', 'course_class_id', 'exercise_id'], 'constraint_course_exercise_unique');
+            $table->dateTime('deadline')->nullable(); // Hạn nộp bài cho bài tập regular
             $table->timestamps();
         });
     }

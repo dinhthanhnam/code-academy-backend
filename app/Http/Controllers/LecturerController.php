@@ -87,8 +87,8 @@ class LecturerController extends Controller
             $lecturer = User::findOrFail($request->input('lecturer_id'));
 
             // Gán lớp học với role vào bảng pivot
-            $lecturer->course_class()->syncWithoutDetaching(
-                [$request->input('course_class_id') => ['role' => $lecturer->role]
+            $lecturer->course_class()->syncWithoutDetaching([
+                $request->input('course_class_id') => ['role' => $lecturer->role]
             ]);
 
             return response()->json([
