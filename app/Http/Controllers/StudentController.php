@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Str;
 
 class StudentController extends Controller
 {
@@ -22,7 +23,7 @@ class StudentController extends Controller
         // Nếu cần định dạng lại dữ liệu
         $formatted_courses = $courses->map(function ($course) {
             return [
-                'id' => $course->slug . rand(10 , 99),
+                'id' => Str::uuid()->toString(),
                 'name' => $course->name,
                 'path' => "/" . $course->slug,
             ];

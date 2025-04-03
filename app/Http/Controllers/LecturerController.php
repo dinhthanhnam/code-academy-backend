@@ -8,6 +8,7 @@ use App\Models\User;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Str;
 use Symfony\Component\HttpFoundation\Response;
 
 class LecturerController extends Controller
@@ -29,7 +30,7 @@ class LecturerController extends Controller
 
         $formatted_course_classes = $course_classes->map(function ($course) {
             return [
-                'id' => $course->slug . rand(10, 99),
+                'id' => Str::uuid()->toString(),
                 'name' => $course->name,
                 'type' => 'course_class', // Đánh dấu là loại course_class
                 'path' => "/" . $course->slug,
@@ -38,7 +39,7 @@ class LecturerController extends Controller
 
         // Format regular_class (nếu có)
         $formatted_regular_class = $regular_class ? [[
-            'id' => $regular_class->id . rand(10, 99),
+            'id' => Str::uuid()->toString(),
             'name' => $regular_class->name,
             'type' => 'regular_class',
             'path' => "/regular/" . $regular_class->id,
@@ -50,11 +51,11 @@ class LecturerController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Lấy dữ liệu thành công!',
-            'formatted_classes' => $formatted_classes
+            'lecturer_course_classes' => $formatted_classes
         ]);
     }
 
-    public function get_course_classes_by_lecturer_id(Request $request)
+    public function get_course_classes_by_lecturer(Request $request)
     {
         if(!$request->has('lecturer_id')) {
             return response()->json([

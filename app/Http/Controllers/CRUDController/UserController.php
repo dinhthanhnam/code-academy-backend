@@ -5,22 +5,17 @@ namespace App\Http\Controllers\CRUDController;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\UserResource;
 use App\Models\User;
-use Hash;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
-use Nette\Schema\ValidationException;
+use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpFoundation\Response;
 
-class LecturerController extends Controller
+class UserController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index(Request $request)
     {
         $query = User::query();
-        $query->where('role', 'lecturer');
 
         if ($request->has('search')) {
             $search = $request->input('search');
@@ -41,20 +36,17 @@ class LecturerController extends Controller
             $validated = $request->validate([
                 'email' => 'required|string|max:255|unique:users',
                 'name' => 'required|string|max:255',
-                'password' => 'required|string|min:8'
             ]);
 
-            $validated['password'] = Hash::make($validated['password']);
-
-            $lecturer = User::create($validated);
+            $user = User::create($validated);
             return response()->json([
-                'message' => 'Thêm giảng viên thành công!',
+                'message' => 'Thêm người dùng thành công!',
                 'success' => true,
-                'data' => new UserResource($lecturer)
+                'data' => new UserResource($user)
             ]);
         } catch (ValidationException $e) {
             return response()->json([
-                'message' => 'Thêm giảng viên thất bại!',
+                'message' => 'Thêm người dùng thất bại!',
                 'success' => false,
             ], 422);
         }
@@ -66,17 +58,17 @@ class LecturerController extends Controller
     public function show(string $id)
     {
         try {
-            $lecturer = User::findOrFail($id);
-            if($lecturer->role !== 'lecturer') {
+            $user = User::findOrFail($id);
+            if($user->role !== 'lecturer') {
                 return response()->json([
-                    'message' => 'Không tìm thấy giảng viên',
+                    'message' => 'Không tìm thấy người dùng',
                     'success' => false,
                 ], Response::HTTP_NOT_FOUND);
             }
-            return new UserResource($lecturer);
+            return new UserResource($user);
         } catch (ModelNotFoundException $e) {
             return response()->json([
-                'message' => 'Không tìm thấy giảng viên',
+                'message' => 'Không tìm thấy người dùng',
                 'success' => false,
             ], Response::HTTP_NOT_FOUND);
         }
@@ -88,25 +80,25 @@ class LecturerController extends Controller
     public function update(Request $request, string $id)
     {
         try {
-            $lecturer = User::findOrFail($id);
+            $user = User::findOrFail($id);
             $validated = $request->validate([
                 'name' => 'sometimes|string|max:255',
             ]);
 
-            $lecturer->update($validated);
+            $user->update($validated);
             return response()->json([
-                'message' => 'Cập nhật giảng viên thành công',
+                'message' => 'Cập nhật người dùng thành công',
                 'success' => true,
-                'data' => new UserResource($lecturer)
+                'data' => new User($user)
             ]);
         } catch (ModelNotFoundException $e) {
             return response()->json([
-                'message' => 'Không tìm thấy giảng viên',
+                'message' => 'Không tìm thấy người dùng',
                 'success' => false,
             ], Response::HTTP_NOT_FOUND);
         } catch (ValidationException $e) {
             return response()->json([
-                'message' => 'Không tìm thấy giảng viên',
+                'message' => 'Không tìm thấy người dùng',
                 'success' => false,
             ], 422);
         }
@@ -118,15 +110,15 @@ class LecturerController extends Controller
     public function destroy(string $id)
     {
         try {
-            $lecturer = User::findOrFail($id);
-            $lecturer->delete();
-            return response()->json(['message' => 'Xoá giảng viên thành công', 'success' => true]);
+            $user = User::findOrFail($id);
+            $user->delete();
+            return response()->json(['message' => 'Xoá người dùng thành công', 'success' => true]);
         } catch (ModelNotFoundException $e) {
-            return response()->json(['message' => 'Không tìm thấy giảng viên', 'success' => false], Response::HTTP_NOT_FOUND);
+            return response()->json(['message' => 'Không tìm thấy người dùng', 'success' => false], Response::HTTP_NOT_FOUND);
         } catch (QueryException $e) {
             if ($e->getCode() === '23000') {
                 return response()->json([
-                    'message' => 'Không thể xóa giảng viên vì còn liên kết với dữ liệu khác',
+                    'message' => 'Không thể xóa người dùng vì còn liên kết với dữ liệu khác',
                     'success' => false
                 ], Response::HTTP_CONFLICT);
             }

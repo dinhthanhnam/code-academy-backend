@@ -1,10 +1,13 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CourseClassController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\CRUDController\CourseController as CourseCRUDController;
 use App\Http\Controllers\CRUDController\CourseClassController as CourseClassCRUDController;
 use App\Http\Controllers\CRUDController\LecturerController as LecturerCRUDController;
+use App\Http\Controllers\CRUDController\UserController as UserCRUDController;
+use App\Http\Controllers\CRUDController\ExerciseController as ExerciseCRUDController;
 use App\Http\Controllers\LecturerController;
 use App\Http\Controllers\OptionController;
 use App\Http\Controllers\StudentController;
@@ -35,12 +38,17 @@ Route::group(['prefix' => 'api'], function () {
     Route::get('/personal_role', [AuthController::class, 'personal_role']);
     Route::get('/personal_course_classes', [StudentController::class, 'personal_course_classes']);
     Route::get('/lecturer_course_classes', [LecturerController::class, 'lecturer_course_classes']);
+    Route::get('/course/detail', [CourseClassController::class, 'course_class_detail']);
+    Route::get('/course/exercises', [CourseClassController::class, 'course_class_exercises']);
+    Route::get('/course/students', [CourseClassController::class, 'course_class_students'])->middleware('admin');
 });
 
 Route::group(['prefix' => 'admin', 'middleware' => 'admin'], function () {
     Route::apiResource('course', CourseCRUDController::class);
     Route::apiResource('course-class', CourseClassCRUDController::class);
     Route::apiResource('lecturer', LecturerCRUDController::class);
+    Route::apiResource('user', UserCRUDController::class);
+    Route::apiResource('exercise', ExerciseCRUDController::class);
 });
 
 Route::group(['prefix' => 'course' , 'middleware' => 'admin'], function () {
@@ -48,14 +56,18 @@ Route::group(['prefix' => 'course' , 'middleware' => 'admin'], function () {
 });
 
 Route::group(['prefix' => 'lecturer', 'middleware' => 'admin'], function () {
-    Route::get('course-classes', [LecturerController::class, 'get_course_classes_by_lecturer_id']);
-    Route::post('assign-course', [LecturerController::class, 'assign_course_class_to_lecturer']);
-    Route::post('detach-course', [LecturerController::class, 'detach_course_class_from_lecturer']);
+    Route::get('/course-classes', [LecturerController::class, 'get_course_classes_by_lecturer']);
+    Route::post('/assign-course', [LecturerController::class, 'assign_course_class_to_lecturer']);
+    Route::post('/detach-course', [LecturerController::class, 'detach_course_class_from_lecturer']);
+});
+
+Route:: group(['prefix' => 'course-class', 'middleware' => 'admin'], function () {
+
 });
 
 Route::group(['prefix' => 'option'], function () {
-    Route::get('regular-class', [OptionController::class, 'regular_class']);
-    Route::get('course', [OptionController::class, 'course']);
-    Route::get('course-class', [OptionController::class, 'course_class']);
-    Route::get('lecturer', [OptionController::class, 'lecturer']);
+    Route::get('/regular-class', [OptionController::class, 'regular_class']);
+    Route::get('/course', [OptionController::class, 'course']);
+    Route::get('/course-class', [OptionController::class, 'course_class']);
+    Route::get('/lecturer', [OptionController::class, 'lecturer']);
 });
