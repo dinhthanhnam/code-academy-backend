@@ -189,6 +189,7 @@ class CourseSeeder extends Seeder
                     $course_class_model = CourseClass::create([
                         'assigned_regular_class_id' => $regular_class_model->id,
                         'course_class_code' => $course_class['course_class_code'],
+                        'course_class_join_code' => Str::random(8),
                         'name' => $course_class['name'],
                         'description' => $course_class['description'] ?? null,
                         'start_date' => Date::parse($course_class['start_date']),

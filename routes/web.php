@@ -38,9 +38,10 @@ Route::group(['prefix' => 'api'], function () {
     Route::get('/personal_role', [AuthController::class, 'personal_role']);
     Route::get('/personal_course_classes', [StudentController::class, 'personal_course_classes']);
     Route::get('/lecturer_course_classes', [LecturerController::class, 'lecturer_course_classes']);
-    Route::get('/course/{slug}/detail', [CourseClassController::class, 'course_class_detail']);
-    Route::get('/course/{slug}/exercises', [CourseClassController::class, 'course_class_exercises']);
-    Route::get('/course/{slug}/students', [CourseClassController::class, 'course_class_students'])->middleware('admin');
+    Route::get('/lecturer/course-classes', [LecturerController::class, 'get_course_classes_for_particular_lecturer']);
+    Route::get('/course-class/{slug}/detail', [CourseClassController::class, 'course_class_detail']);
+    Route::get('/course-class/{slug}/exercises', [CourseClassController::class, 'course_class_exercises']);
+    Route::get('/course-class/{slug}/students', [CourseClassController::class, 'course_class_students'])->middleware('admin');
 });
 
 Route::group(['prefix' => 'admin', 'middleware' => 'admin'], function () {

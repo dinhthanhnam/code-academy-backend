@@ -14,18 +14,33 @@ use Symfony\Component\HttpFoundation\Response;
 class CourseClassController extends Controller
 {
     // Lấy thông tin lớp học
-    public function course_class_detail(string $slug) {
+    public function course_class_detail(Request $request, string $slug)
+    {
         try {
-            $course_class = CourseClass::where('slug', $slug)->first();
+            // Get the authenticated user
+            $user = $request->user();
+
+            if (!$user) {
+                return response()->json([
+                    'message' => 'Unauthenticated',
+                    'success' => false
+                ], Response::HTTP_UNAUTHORIZED);
+            }
+
+            // Check if the course class exists in user's related course_classes
+            $course_class = $user->course_class()
+                ->where('slug', $slug)
+                ->first();
 
             if (!$course_class) {
                 return response()->json([
-                    'message' => 'Không tìm thấy lớp',
+                    'message' => 'Không tìm thấy lớp hoặc bạn không có quyền truy cập',
                     'success' => false
                 ], Response::HTTP_NOT_FOUND);
             }
 
             return new CourseClassResource($course_class);
+
         } catch (Exception $e) {
             return response()->json([
                 'message' => $e->getMessage(),

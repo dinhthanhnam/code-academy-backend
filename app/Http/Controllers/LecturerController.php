@@ -54,7 +54,23 @@ class LecturerController extends Controller
             'lecturer_course_classes' => $formatted_classes
         ]);
     }
+    public function get_course_classes_for_particular_lecturer(Request $request)
+    {
 
+        $lecturer = $request->user();
+
+        $course_classes = $lecturer->course_class();
+
+        if ($request->has('search')) {
+            $search = $request->input('search');
+            $course_classes->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%$search%")
+                    ->orWhere('course_class_code', 'like', "%$search%");
+            });
+        }
+        // Trả về danh sách lớp học theo pagination
+        return CourseClassResource::collection($course_classes->paginate(8));
+    }
     public function get_course_classes_by_lecturer(Request $request)
     {
         if(!$request->has('lecturer_id')) {
