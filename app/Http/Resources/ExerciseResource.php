@@ -24,6 +24,8 @@ class ExerciseResource extends JsonResource
             'is_free' => $this->is_free,
             'time_limit' => $this->time_limit,
             'memory_limit' => $this->memory_limit,
+            'topics' => $this->topics->pluck('name')->all(), // Chỉ lấy danh sách tên của topics
+            'language' => $this->language->isNotEmpty() ? $this->language->first()->name : null,
             'pivot' => $this->whenPivotLoaded('course_exercise', function () {
                 return [
                     'course_id' => $this->pivot->course_id,

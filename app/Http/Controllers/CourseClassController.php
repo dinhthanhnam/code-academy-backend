@@ -61,7 +61,12 @@ class CourseClassController extends Controller
                 ], Response::HTTP_NOT_FOUND);
             }
 
-            return ExerciseResource::collection($course_class->exercises()->paginate(8));
+            // Sử dụng with() để eager load các quan hệ topics và language
+            $exercises = $course_class->exercises()
+                ->with(['topics', 'language'])
+                ->paginate(8);
+
+            return ExerciseResource::collection($exercises);
         } catch (Exception $e) {
             return response()->json([
                 'message' => $e->getMessage(),
