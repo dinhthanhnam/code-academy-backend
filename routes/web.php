@@ -21,6 +21,7 @@ Route::post('/login', [AuthController::class, "login"]);
 Route::post('/register', [AuthController::class, "register"]);
 Route::post('/logout', [AuthController::class, "logout"])
     ->middleware('auth');
+Route::post('/join-class', [CourseClassController::class, 'joinClass'])->middleware('auth:sanctum');
 
 Route::get('/auth/check', function (Request $request) {
     if (Auth::check()) {

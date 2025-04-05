@@ -95,4 +95,55 @@ class CourseClassController extends Controller
             ], Response::HTTP_BAD_REQUEST);
         }
     }
+    public function joinClass(Request $request)
+    {
+        try {
+            $user = $request->user();
+            if (!$user) {
+                return response()->json([
+                    'message' => 'Unauthenticated',
+                    'success' => false,
+                ], Response::HTTP_UNAUTHORIZED);
+            }
+
+            $validated = $request->validate([
+                'class_code' => 'required|string', // Đổi từ 'join_code' sang 'class_code'
+            ]);
+
+            $courseClass = CourseClass::where('course_class_join_code', $validated['class_code'])->first();
+            if (!$courseClass) {
+                return response()->json([
+                    'message' => "Không tìm thấy lớp học phần với mã tham gia: {$validated['class_code']}",
+                    'success' => false,
+                ], Response::HTTP_NOT_FOUND);
+            }
+
+            if ($courseClass->attendants()->where('user_id', $user->id)->exists()) {
+                return response()->json([
+                    'message' => 'Bạn đã tham gia lớp học phần này rồi',
+                    'success' => false,
+                ], Response::HTTP_CONFLICT);
+            }
+
+            $courseClass->attendants()->attach($user->id, ['role' => 'student']);
+
+            return response()->json([
+                'message' => 'Tham gia lớp học phần thành công',
+                'success' => true,
+                'data' => new CourseClassResource($courseClass),
+            ], Response::HTTP_OK);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'message' => 'Dữ liệu không hợp lệ',
+                'success' => false,
+                'errors' => $e->errors(),
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
+        } catch (Exception $e) {
+            return response()->json([
+                'message' => 'Đã xảy ra lỗi: ' . $e->getMessage(),
+                'success' => false,
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
 }
