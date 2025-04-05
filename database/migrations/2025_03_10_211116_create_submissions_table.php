@@ -20,7 +20,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->foreignId('exercise_id')->constrained('exercises')->onDelete('cascade');
-            $table->foreignId('course_id')->nullable()->constrained('courses')->onDelete('cascade');
+            $table->foreignId('course_class_id')->nullable()->constrained('course_classes')->onDelete('cascade');
             $table->text('source_code'); // Mã nguồn sinh viên nộp
             $table->string('language'); // Ngôn ngữ lập trình (ví dụ: python, java)
             $table->string('status')->default('pending'); // Trạng thái: pending, accepted, wrong_answer, time_limit_exceeded, etc.

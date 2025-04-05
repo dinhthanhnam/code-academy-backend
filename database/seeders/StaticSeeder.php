@@ -17,11 +17,11 @@ class StaticSeeder extends Seeder
         $default_languages = [
             [
                 "name" => "c_cpp",
-                "judge_language_id" => 1,
+                "judge_language_id" => 2,
             ],
             [
                 "name" => "java",
-                "judge_language_id" => 6,
+                "judge_language_id" => 4,
             ],
             [
                 "name" => "python",
