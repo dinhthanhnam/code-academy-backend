@@ -494,7 +494,6 @@ class ExerciseSeeder extends Seeder
             ],
         ];
         foreach ($exercises as $exerciseData) {
-            // Tạo bài tập mới trong bảng Exercise
             $exercise = Exercise::create([
                 'title' => $exerciseData['title'],
                 'description' => $exerciseData['description'],
@@ -506,34 +505,39 @@ class ExerciseSeeder extends Seeder
                 'time_limit' => $exerciseData['time_limit'],
                 'memory_limit' => $exerciseData['memory_limit'],
             ]);
-        
-            // Liên kết topics và language với bài tập
+
             if (!empty($exerciseData['topics'])) {
                 $exercise->topics()->attach($exerciseData['topics']);
             }
             $exercise->language()->attach($exerciseData['language']);
         }
-        
+
         // Lấy danh sách bài tập theo mức độ
-        $basic_exercises = Exercise::where('level', 'basic')->orderBy('id')->limit(9)->get(); // Lấy 9 bài basic
-        $intermediate_exercises = Exercise::where('level', 'intermediate')->orderBy('id')->limit(10)->get(); // Lấy 10 bài intermediate
-        $advanced_exercises = Exercise::where('level', 'advanced')->orderBy('id')->limit(9)->get(); // Lấy 9 bài advanced
-        
-        // Lấy thông tin khóa học
-        $course_cslt = Course::where('name', 'Cơ sở lập trình')->firstOrFail();
+        $basic_exercises = Exercise::where('level', 'basic')->orderBy('id')->get();
+        $intermediate_exercises = Exercise::where('level', 'intermediate')->orderBy('id')->get();
+        $advanced_exercises = Exercise::where('level', 'advanced')->orderBy('id')->get();
+
+        // Lấy thông tin các khóa học
+        $course_intro_it = Course::where('name', 'Nhập môn ngành công nghệ thông tin')->firstOrFail();
+        $course_digital_skills = Course::where('name', 'Năng lực số ứng dụng')->firstOrFail();
         $course_cpp = Course::where('name', 'Lập trình nâng cao với C++')->firstOrFail();
-        
+        $course_c = Course::where('name', 'Lập trình nâng cao với C')->firstOrFail();
+        $course_cslt = Course::where('name', 'Cơ sở lập trình')->firstOrFail();
+
         // Lấy danh sách lớp học của từng khóa
-        $course_classes_cslt = CourseClass::where('course_id', $course_cslt->id)->get();
-        $course_classes_cpp = CourseClass::where('course_id', $course_cpp->id)->get();
-        
-        // Gắn bài tập basic vào các lớp của khóa "Cơ sở lập trình"
-        foreach ($course_classes_cslt as $course_class) {
+        $classes_intro_it = CourseClass::where('course_id', $course_intro_it->id)->get();
+        $classes_digital_skills = CourseClass::where('course_id', $course_digital_skills->id)->get();
+        $classes_cpp = CourseClass::where('course_id', $course_cpp->id)->get();
+        $classes_c = CourseClass::where('course_id', $course_c->id)->get();
+        $classes_cslt = CourseClass::where('course_id', $course_cslt->id)->get();
+
+        // 1. Gắn bài tập cho "Nhập môn ngành công nghệ thông tin" (chỉ basic)
+        foreach ($classes_intro_it as $course_class) {
             $week = 1;
-            foreach ($basic_exercises as $exercise) {
+            foreach ($basic_exercises->take(8) as $exercise) { // Lấy 8 bài basic
                 $course_class->exercises()->syncWithoutDetaching([
                     $exercise->id => [
-                        'course_id' => $course_cslt->id,
+                        'course_id' => $course_intro_it->id,
                         'course_class_id' => $course_class->id,
                         'week_number' => $week,
                         'is_hard_deadline' => false,
@@ -543,12 +547,40 @@ class ExerciseSeeder extends Seeder
                 $week++;
             }
         }
-        
-        // Gắn bài tập intermediate và advanced vào các lớp của khóa "Lập trình nâng cao với C++"
-        foreach ($course_classes_cpp as $course_class) {
+
+        // 2. Gắn bài tập cho "Năng lực số ứng dụng" (basic + 2 intermediate)
+        foreach ($classes_digital_skills as $course_class) {
             $week = 1;
-            // Gắn bài intermediate
-            foreach ($intermediate_exercises as $exercise) {
+            foreach ($basic_exercises->take(6) as $exercise) { // Lấy 6 bài basic
+                $course_class->exercises()->syncWithoutDetaching([
+                    $exercise->id => [
+                        'course_id' => $course_digital_skills->id,
+                        'course_class_id' => $course_class->id,
+                        'week_number' => $week,
+                        'is_hard_deadline' => false,
+                        'is_active' => true,
+                    ]
+                ]);
+                $week++;
+            }
+            foreach ($intermediate_exercises->take(2) as $exercise) { // Lấy 2 bài intermediate
+                $course_class->exercises()->syncWithoutDetaching([
+                    $exercise->id => [
+                        'course_id' => $course_digital_skills->id,
+                        'course_class_id' => $course_class->id,
+                        'week_number' => $week,
+                        'is_hard_deadline' => false,
+                        'is_active' => true,
+                    ]
+                ]);
+                $week++;
+            }
+        }
+
+        // 3. Gắn bài tập cho "Lập trình nâng cao với C++" (intermediate + advanced)
+        foreach ($classes_cpp as $course_class) {
+            $week = 1;
+            foreach ($intermediate_exercises->take(6) as $exercise) { // Lấy 6 bài intermediate
                 $course_class->exercises()->syncWithoutDetaching([
                     $exercise->id => [
                         'course_id' => $course_cpp->id,
@@ -560,11 +592,56 @@ class ExerciseSeeder extends Seeder
                 ]);
                 $week++;
             }
-            // Gắn bài advanced
-            foreach ($advanced_exercises as $exercise) {
+            foreach ($advanced_exercises->take(6) as $exercise) { // Lấy 6 bài advanced
                 $course_class->exercises()->syncWithoutDetaching([
                     $exercise->id => [
                         'course_id' => $course_cpp->id,
+                        'course_class_id' => $course_class->id,
+                        'week_number' => $week,
+                        'is_hard_deadline' => false,
+                        'is_active' => true,
+                    ]
+                ]);
+                $week++;
+            }
+        }
+
+        // 4. Gắn bài tập cho "Lập trình nâng cao với C" (intermediate + advanced)
+        foreach ($classes_c as $course_class) {
+            $week = 1;
+            foreach ($intermediate_exercises->skip(6)->take(6) as $exercise) { // Lấy 6 bài intermediate khác
+                $course_class->exercises()->syncWithoutDetaching([
+                    $exercise->id => [
+                        'course_id' => $course_c->id,
+                        'course_class_id' => $course_class->id,
+                        'week_number' => $week,
+                        'is_hard_deadline' => false,
+                        'is_active' => true,
+                    ]
+                ]);
+                $week++;
+            }
+            foreach ($advanced_exercises->skip(3)->take(6) as $exercise) { // Lấy 6 bài advanced khác
+                $course_class->exercises()->syncWithoutDetaching([
+                    $exercise->id => [
+                        'course_id' => $course_c->id,
+                        'course_class_id' => $course_class->id,
+                        'week_number' => $week,
+                        'is_hard_deadline' => false,
+                        'is_active' => true,
+                    ]
+                ]);
+                $week++;
+            }
+        }
+
+        // 5. Gắn bài tập cho "Cơ sở lập trình" (chỉ basic)
+        foreach ($classes_cslt as $course_class) {
+            $week = 1;
+            foreach ($basic_exercises->skip(8)->take(8) as $exercise) { // Lấy 8 bài basic khác
+                $course_class->exercises()->syncWithoutDetaching([
+                    $exercise->id => [
+                        'course_id' => $course_cslt->id,
                         'course_class_id' => $course_class->id,
                         'week_number' => $week,
                         'is_hard_deadline' => false,
