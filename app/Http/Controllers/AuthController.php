@@ -11,10 +11,6 @@ use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
-//    private function makeCookie($token, $name)
-//    {
-//        return Cookie::make($name, $token, 60 * 24 * 7, '/', null, false, true, false, 'Strict');
-//    }
     public function register(Request $request): JsonResponse
     {
         $data = $request->validate([
@@ -37,19 +33,8 @@ class AuthController extends Controller
             'password' => Hash::make($data['password']),
         ]);
 
-        // Đăng nhập tự động sau khi đăng ký
         Auth::login($user);
-        // Regenerate session để phòng chống session fixation
         $request->session()->regenerate();
-
-//        $accessToken = $user->createToken('accessToken', ['*'], now()->addMinutes(60))->plainTextToken;
-//
-//        // Tạo Refresh Token (Hết hạn sau 7 ngày)
-//        $refreshToken = $user->createToken('refreshToken', ['refresh'], now()->addDays(7))->plainTextToken;
-//
-//        // Lưu vào cookie
-//        $accessCookie = cookie('accessToken', $accessToken, 60, '/', null, false, true, false, 'Lax');
-//        $refreshCookie = cookie('refreshToken', $refreshToken, 60 * 24 * 7, '/', null, false, true, false, 'Lax');
 
         return response()->json([
             'success' => true,
@@ -71,16 +56,8 @@ class AuthController extends Controller
         ]);
 
         if (Auth::attempt($credentials)) {
-            // Nếu đăng nhập thành công, regenerate session
             $request->session()->regenerate();
             $user = Auth::user();
-//            $accessToken = $user->createToken('accessToken', ['*'], now()->addMinutes(60))->plainTextToken;
-//            // Tạo Refresh Token (Hết hạn sau 7 ngày)
-//            $refreshToken = $user->createToken('refreshToken', ['refresh'], now()->addDays(7))->plainTextToken;
-//            // Lưu vào cookie
-//            $accessCookie = cookie('accessToken', $accessToken, 60, '/', null, false, true, false, 'Lax');
-//            $refreshCookie = cookie('refreshToken', $refreshToken, 60 * 24 * 7, '/', null, false, true, false, 'Lax');
-
             return response()->json([
                 'success' => true,
                 'message' => 'Đăng nhập thành công!'

@@ -89,19 +89,4 @@ class CourseClass extends Model
             ->withPivot(['week_number', 'deadline', 'is_hard_deadline', 'is_active']);
     }
 
-//    public function all_exercises()
-//    {
-//        return $this->belongsToMany(Exercise::class, 'course_exercise', 'course_class_id', 'exercise_id')
-//            ->using(CourseExercise::class)
-//            ->withPivot(['week_number', 'deadline', 'is_hard_deadline', 'is_active'])
-//            ->where(function ($query) {
-//                $query->where('course_id', $this->course_id)
-//                    ->whereNull('course_class_id')
-//                    ->where('is_active', true);
-//            })
-//            ->orWhere(function ($query) {
-//                $query->where('course_class_id', $this->id)
-//                    ->where('is_active', true);
-//            });
-//    }
 }

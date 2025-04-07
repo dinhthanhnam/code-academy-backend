@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('course_classes', function (Blueprint $table) {
             $table->id();
-            $table->string('assigned_regular_class_id')->nullable();
+            $table->integer('assigned_regular_class_id')->nullable();
             $table->string('course_class_code')->unique(); // Ví dụ: CS101
             $table->string('course_class_join_code')->unique()->nullable(); // Ví dụ: CS101
             $table->string('name');
