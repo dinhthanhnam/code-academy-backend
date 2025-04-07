@@ -59,12 +59,12 @@ class UserController extends Controller
     {
         try {
             $user = User::findOrFail($id);
-            if($user->role !== 'lecturer') {
-                return response()->json([
-                    'message' => 'Không tìm thấy người dùng',
-                    'success' => false,
-                ], Response::HTTP_NOT_FOUND);
-            }
+//            if($user->role !== 'lecturer') {
+//                return response()->json([
+//                    'message' => 'Không tìm thấy người dùng',
+//                    'success' => false,
+//                ], Response::HTTP_NOT_FOUND);
+//            }
             return new UserResource($user);
         } catch (ModelNotFoundException $e) {
             return response()->json([

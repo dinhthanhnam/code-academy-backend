@@ -6,6 +6,7 @@ use App\Http\Controllers\CourseController;
 use App\Http\Controllers\CRUDController\CourseController as CourseCRUDController;
 use App\Http\Controllers\CRUDController\CourseClassController as CourseClassCRUDController;
 use App\Http\Controllers\CRUDController\LecturerController as LecturerCRUDController;
+use App\Http\Controllers\CRUDController\SubmissionController as SubmissionCRUDController;
 use App\Http\Controllers\CRUDController\UserController as UserCRUDController;
 use App\Http\Controllers\CRUDController\ExerciseController as ExerciseCRUDController;
 use App\Http\Controllers\JudgeController;
@@ -53,6 +54,7 @@ Route::group(['prefix' => 'admin', 'middleware' => 'admin'], function () {
     Route::apiResource('lecturer', LecturerCRUDController::class);
     Route::apiResource('user', UserCRUDController::class);
     Route::apiResource('exercise', ExerciseCRUDController::class);
+    Route::apiResource('submission', SubmissionCRUDController::class);
 });
 
 Route::group(['prefix' => 'course' , 'middleware' => 'admin'], function () {
