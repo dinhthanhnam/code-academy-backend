@@ -145,4 +145,7 @@ class LecturerController extends Controller
         }
     }
 
+    public function lecturer_add_course_class_exercise(Request $request) {
+
+    }
 }

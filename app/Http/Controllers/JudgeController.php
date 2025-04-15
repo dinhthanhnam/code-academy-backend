@@ -22,11 +22,13 @@ class JudgeController extends Controller
             'code' => 'required|string',
             'course_class_id' => 'required|integer',
             'exercise_id' => 'required|integer',
+            'mode' => 'required|string|in:compile,submit',
         ]);
 
         $courseClassId = $request->input('course_class_id');
         $exerciseId = $request->input('exercise_id');
         $sourceCode = $request->input('code');
+        $mode = $request->input('mode');
 
         // Validate course exercise and related data
         $courseExercise = CourseExercise::where('course_class_id', $courseClassId)
@@ -37,7 +39,7 @@ class JudgeController extends Controller
             return response()->json(['success' => false, 'message' => 'Không tìm thấy bài tập'], 404);
         }
 
-        if (!$courseExercise->is_active) {
+        if ($mode === 'submit' && !$courseExercise->is_active) {
             return response()->json(['success' => false, 'message' => 'Bài tập đã đóng'], 403);
         }
 
@@ -56,7 +58,7 @@ class JudgeController extends Controller
             return response()->json(['success' => false, 'message' => 'Không có test case'], 400);
         }
 
-        // Process each test case with single submissions
+        // Process each test case
         $judgedResults = [];
         foreach ($testCases as $test) {
             $submissionData = [
@@ -71,57 +73,69 @@ class JudgeController extends Controller
             $response = Http::post(env('JUDGE_HOST') . '/submissions?base64_encoded=false&wait=true', $submissionData);
 
             if (!$response->successful()) {
-                \Log::error('Judge0 single submission failed:', [$response->body()]);
+                \Log::error('Judge0 submission failed:', [$response->body()]);
                 throw new HttpException(502, 'Không thể kết nối tới Judge0');
             }
 
             $judgedResults[] = $response->json();
         }
 
-        \Log::info('Judge0 Single Submission Results:', [$judgedResults]);
-
         // Process results
         $allPassed = true;
         $totalTime = 0;
         $totalMemory = 0;
-        $outputs = [];
+        $results = [];
 
         foreach ($judgedResults as $index => $res) {
-            $outputs[] = [
-                'test_case' => $testCases[$index],
-                'stdout' => $res['stdout'] ?? null,
-                'stderr' => $res['stderr'] ?? null,
+            $statusId = $res['status']['id'] ?? 0;
+            $result = [
                 'status' => $res['status']['description'] ?? 'Unknown',
-                'time' => $res['time'] ?? null,
-                'memory' => $res['memory'] ?? null,
+                'error' => $res['status']['id'] !== 3 ? ($res['stderr'] ?? $res['compile_output'] ?? null) : null,
+                'time' => $res['time'] ?? 0,
+                'memory' => $res['memory'] ?? 0,
             ];
 
-            $totalTime += $res['time'] ?? 0;
-            $totalMemory += $res['memory'] ?? 0;
+            $results[] = $result;
 
-            if (($res['status']['id'] ?? 0) !== 3) { // 3 = Accepted
+            $totalTime += $result['time'];
+            $totalMemory += $result['memory'];
+
+            if ($statusId !== 3) { // 3 = Accepted
                 $allPassed = false;
             }
         }
 
-        // Save submission
-        $submission = Submission::create([
-            'user_id'         => \Auth::id(),
-            'exercise_id'     => $exerciseId,
-            'course_class_id' => $courseClassId,
-            'source_code'     => $sourceCode,
-            'language'        => $language->name,
-            'status'          => $allPassed ? 'accepted' : 'failed',
-            'execution_time'  => round($totalTime, 3),
-            'memory_used'     => (int) $totalMemory,
-            'output'          => json_encode($outputs),
-        ]);
+        $message = $allPassed
+            ? 'Tất cả test đều đúng'
+            : 'Một số test bị sai';
+
+        // Only save to database if mode is 'submit'
+        $submissionId = null;
+
+        if ($mode === 'submit') {
+            $submission = Submission::create([
+                'user_id'         => \Auth::id(),
+                'exercise_id'     => $exerciseId,
+                'course_class_id' => $courseClassId,
+                'source_code'     => $sourceCode,
+                'language'        => $language->name,
+                'status'          => $allPassed ? 'accepted' : 'failed',
+                'execution_time'  => round($totalTime, 3),
+                'memory_used'     => (int) $totalMemory,
+                'output'          => json_encode($results),
+            ]);
+
+            $submissionId = $submission->id;
+            $message = 'Nộp bài thành công, ' . $message;
+        } else {
+            $message = 'Biên dịch thành công, ' . $message;
+        }
 
         return response()->json([
             'success' => true,
-            'message' => $allPassed ? 'Nộp bài thành công, tất cả test đều đúng' : 'Nộp bài thành công, một số test bị sai',
-            'submission_id' => $submission->id,
-            'results' => $outputs,
+            'message' => $message,
+            'submission_id' => $submissionId,
+            'results' => $results,
         ]);
     }
 }
