@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\CourseClassResource;
 use App\Models\CourseClass;
+use App\Models\CourseExercise;
+use App\Models\Exercise;
 use App\Models\User;
 use Exception;
 use Illuminate\Http\JsonResponse;
@@ -145,4 +147,56 @@ class LecturerController extends Controller
         }
     }
 
+    public function lecturer_create_course_class_exercise(Request $request)
+    {
+        $validated = $request->validate([
+            'title' => 'required|string',
+            'description' => 'required|string',
+            'level' => 'required|in:basic,intermediate,advanced',
+            'example_input' => 'nullable|string',
+            'example_output' => 'required|string',
+            'test_cases' => 'required|array',
+            'time_limit' => 'required|integer',
+            'memory_limit' => 'required|integer',
+            'is_free' => 'boolean',
+            'course_class_id' => 'required|exists:course_classes,id',
+            'week_number' => 'required|integer',
+            'deadline' => 'required|date',
+            'is_hard_deadline' => 'boolean'
+        ]);
+        try {
+            // Tạo bài tập
+            $exercise = Exercise::create([
+                'title' => $validated['title'],
+                'description' => $validated['description'],
+                'level' => $validated['level'],
+                'example_input' => $validated['example_input'] ?? null,
+                'example_output' => $validated['example_output'],
+                'test_cases' => json_encode($validated['test_cases']),
+                'is_free' => $validated['is_free'] ?? false,
+                'time_limit' => $validated['time_limit'],
+                'memory_limit' => $validated['memory_limit'],
+            ]);
+
+            // Gán bài tập vào lớp học
+            CourseExercise::create([
+                'week_number' => $validated['week_number'],
+                'deadline' => $validated['deadline'],
+                'is_hard_deadline' => $validated['is_hard_deadline'] ?? false,
+                'is_active' => true,
+                'course_class_id' => $validated['course_class_id'],
+                'exercise_id' => $exercise->id,
+            ]);
+            return response()->json([
+                'message' => 'Exercise created and assigned successfully.',
+                'success' => true,
+                'exercise' => $exercise
+            ]);
+        } catch (Exception $e) {
+            return response()->json([
+                'message' => 'Error' .$e,
+                'success' => false,
+            ]);
+        }
+    }
 }

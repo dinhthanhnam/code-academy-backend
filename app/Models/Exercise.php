@@ -37,7 +37,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
  */
 class Exercise extends Model
 {
-    protected $fillable = ['title', 'description', 'is_free', 'level', 'time_limit', 'memory_limit'];
+    protected $fillable = ['title', 'description', 'is_free', 'level', 'time_limit', 'memory_limit', 'example_input', 'example_output', 'test_cases'];
 
     public function topics(): BelongsToMany
     {

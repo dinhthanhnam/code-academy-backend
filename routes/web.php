@@ -23,7 +23,7 @@ Route::post('/login', [AuthController::class, "login"]);
 Route::post('/register', [AuthController::class, "register"]);
 Route::post('/logout', [AuthController::class, "logout"])
     ->middleware('auth');
-Route::post('/join-class', [CourseClassController::class, 'joinClass'])->middleware('auth:sanctum');
+Route::post('/join-class', [CourseClassController::class, 'joinClass']);
 
 Route::get('/auth/check', function (Request $request) {
     if (Auth::check()) {
@@ -62,6 +62,7 @@ Route::group(['prefix' => 'course' , 'middleware' => 'admin'], function () {
 });
 
 Route::group(['prefix' => 'lecturer', 'middleware' => 'admin'], function () {
+    Route::post('/create-exercise', [LecturerController::class, 'lecturer_create_course_class_exercise']);
     Route::get('/course-classes', [LecturerController::class, 'get_course_classes_by_lecturer']);
     Route::post('/assign-course', [LecturerController::class, 'assign_course_class_to_lecturer']);
     Route::post('/detach-course', [LecturerController::class, 'detach_course_class_from_lecturer']);
