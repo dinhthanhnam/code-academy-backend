@@ -94,4 +94,27 @@ class AuthController extends Controller
         ]);
     }
 
+    public function personal_info(Request $request): JsonResponse
+    {
+        if (!Auth::check()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Lấy vai trò thất bại'
+            ], 401);
+        }
+    
+        $user = Auth::user();
+        return response()->json([
+            'success' => true,
+            'message' => 'Lấy thông tin người dùng thành công',
+            'user' => [
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+                'role' => $user->role
+            ]
+        ]);
+    }
+
+
 }
