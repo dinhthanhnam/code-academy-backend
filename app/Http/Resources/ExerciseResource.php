@@ -34,6 +34,7 @@ class ExerciseResource extends JsonResource
                     'deadline' => $this->pivot->deadline,
                     'is_hard_deadline' => $this->pivot->is_hard_deadline,
                     'is_active' => $this->pivot->is_active,
+                    'is_test' => $this->pivot->is_test,
                 ];
             }),
         ];
