@@ -15,6 +15,6 @@ class Conversation extends Model
 
     public function courseClass()
     {
-        return $this->belongsTo(CourseClass::class); // Giả sử bạn có model CourseClass
+        return $this->belongsTo(CourseClass::class);
     }
 }
