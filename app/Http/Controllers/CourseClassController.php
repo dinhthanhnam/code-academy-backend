@@ -64,7 +64,7 @@ class CourseClassController extends Controller
             // Sử dụng with() để eager load các quan hệ topics và language
             $exercises = $course_class->exercises()
                 ->with(['topics', 'language'])
-                ->paginate(8);
+                ->paginate(15);
 
             return ExerciseResource::collection($exercises);
         } catch (Exception $e) {
