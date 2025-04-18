@@ -19,7 +19,7 @@ class LecturerSeeder extends Seeder
             ['name' => 'Trần Viết Huy', 'email' => 'huytv@hvnh.edu.vn', 'password' => 'huy123'],
             ['name' => 'Nguyễn Ngọc Thuỵ', 'email' => 'thuynn@hvnh.edu.vn', 'password' => 'thuy123'],
             ['name' => 'Giang Thu Huyền', 'email' => 'huyengt@hvnh.edu.vn', 'password' => 'huyen123'],
-            ['name' => 'Lê Hùng', 'email' => 'lehung@hvnh.edu.vn', 'password' => 'lehung123'],
+            ['name' => 'Lê Văn Hùng', 'email' => 'lehung@hvnh.edu.vn', 'password' => 'lehung123'],
         ];
         foreach ($lecturers as $lecturer) {
             User::create([

@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('title');
             $table->text('description');
-            $table->enum('level', ['basic', 'intermediate', 'advanced'])->nullable();
+            $table->enum('level', ['basic', 'intermediate', 'advanced', 'exam'])->nullable();
             $table->string('example_input')->nullable();
             $table->string('example_output');
             $table->json('test_cases');

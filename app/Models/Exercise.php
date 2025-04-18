@@ -38,7 +38,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 class Exercise extends Model
 {
     protected $fillable = ['title', 'description', 'is_free', 'level', 'time_limit', 'memory_limit', 'example_input', 'example_output', 'test_cases'];
-
+    protected $casts = [
+        'test_cases' => 'array',
+    ];
     public function topics(): BelongsToMany
     {
         return $this->belongsToMany(Topic::class);

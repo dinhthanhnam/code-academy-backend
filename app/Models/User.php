@@ -12,7 +12,7 @@ use Laravel\Sanctum\HasApiTokens;
 use \Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
- * 
+ *
  *
  * @property int $id
  * @property string $name
@@ -62,6 +62,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'role'
     ];
 
     /**

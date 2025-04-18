@@ -83,13 +83,14 @@ class UserController extends Controller
             $user = User::findOrFail($id);
             $validated = $request->validate([
                 'name' => 'sometimes|string|max:255',
+                'role' => 'sometimes|string|in:lecturer,student,admin'
             ]);
 
             $user->update($validated);
             return response()->json([
                 'message' => 'Cập nhật người dùng thành công',
                 'success' => true,
-                'data' => new User($user)
+                'data' => $user->fresh()
             ]);
         } catch (ModelNotFoundException $e) {
             return response()->json([
@@ -98,7 +99,7 @@ class UserController extends Controller
             ], Response::HTTP_NOT_FOUND);
         } catch (ValidationException $e) {
             return response()->json([
-                'message' => 'Không tìm thấy người dùng',
+                'message' => 'Validate thất bại',
                 'success' => false,
             ], 422);
         }

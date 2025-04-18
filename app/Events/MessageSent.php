@@ -34,7 +34,7 @@ class MessageSent implements ShouldBroadcastNow
             'id' => $this->message->id,
             'user_id' => $this->message->user_id,
             'user_name' => $this->message->user ? $this->message->user->name : 'Unknown',
-            'conversation_id' => $this->message->conversation_id,
+            'conversation_id' => (int) $this->message->conversation_id,
             'content' => $this->message->content,
             'created_at' => $this->message->created_at->toISOString(),
             'updated_at' => $this->message->updated_at->toISOString(),

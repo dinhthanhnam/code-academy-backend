@@ -120,7 +120,7 @@ class CourseSeeder extends Seeder
                         'course_class_code' => 'IS28A01',
                         'name' => 'K24CNTTA - IS28A',
                         'description' => 'Lập trình nâng cao với C K24CNTTA - IS28A',
-                        'lecturer' => 'Lê Hùng',
+                        'lecturer' => 'Lê Văn Hùng',
                         'start_date' => '2025-03-16',
                     ],
                     [
@@ -128,7 +128,7 @@ class CourseSeeder extends Seeder
                         'course_class_code' => 'IS28A02',
                         'name' => 'K24HTTTA - IS28A',
                         'description' => 'Lập trình nâng cao với C K24HTTTA - IS28A',
-                        'lecturer' => 'Lê Hùng',
+                        'lecturer' => 'Lê Văn Hùng',
                         'start_date' => '2025-03-16',
                     ],
                     [
@@ -136,7 +136,7 @@ class CourseSeeder extends Seeder
                         'course_class_code' => 'IS28A03',
                         'name' => 'K24HTTTB - IS28A',
                         'description' => 'Lập trình nâng cao với C K24HTTTB - IS28A',
-                        'lecturer' => 'Lê Hùng',
+                        'lecturer' => 'Lê Văn Hùng',
                         'start_date' => '2025-03-16',
                     ],
                 ],
@@ -150,7 +150,7 @@ class CourseSeeder extends Seeder
                         'course_class_code' => 'IS29A01',
                         'name' => 'K24CNTTA - IS29A',
                         'description' => 'Lập trình nâng cao với C++ K24CNTTA - IS29A',
-                        'lecturer' => 'Lê Hùng',
+                        'lecturer' => 'Lê Văn Hùng',
                         'start_date' => '2025-03-16',
                     ],
                     [
@@ -158,7 +158,7 @@ class CourseSeeder extends Seeder
                         'course_class_code' => 'IS29A02',
                         'name' => 'K24HTTTA - IS29A',
                         'description' => 'Lập trình nâng cao với C++ K24HTTTA - IS29A',
-                        'lecturer' => 'Lê Hùng',
+                        'lecturer' => 'Lê Văn Hùng',
                         'start_date' => '2025-03-16',
                     ],
                     [
@@ -166,7 +166,7 @@ class CourseSeeder extends Seeder
                         'course_class_code' => 'IS29A03',
                         'name' => 'K24HTTTB - IS29A',
                         'description' => 'Lập trình nâng cao với C++ K24HTTTB - IS29A',
-                        'lecturer' => 'Lê Hùng',
+                        'lecturer' => 'Lê Văn Hùng',
                         'start_date' => '2025-03-16',
                     ],
                 ],
