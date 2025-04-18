@@ -6,6 +6,7 @@ use App\Http\Resources\CourseClassResource;
 use App\Http\Resources\ExerciseResource;
 use App\Http\Resources\UserResource;
 use App\Models\CourseClass;
+use App\Models\Exercise;
 use Exception;
 use Illuminate\Http\Request;
 use Nette\Schema\ValidationException;
@@ -51,21 +52,26 @@ class CourseClassController extends Controller
 
     public function course_class_exercises(string $slug) {
         try {
-
-            $course_class = CourseClass::where('slug', $slug)->first();
-
-            if (!$course_class) {
-                return response()->json([
-                    'message' => 'Không tìm thấy lớp',
-                    'success' => false
-                ], Response::HTTP_NOT_FOUND);
-            }
-
-            // Sử dụng with() để eager load các quan hệ topics và language
-            $exercises = $course_class->exercises()
+            if ($slug == "irregular"){
+                $exercises = Exercise::where('is_free', 1)
                 ->with(['topics', 'language'])
                 ->paginate(15);
+            }
+            else{
+                $course_class = CourseClass::where('slug', $slug)->first();
 
+                if (!$course_class) {
+                    return response()->json([
+                        'message' => 'Không tìm thấy lớp',
+                        'success' => false
+                    ], Response::HTTP_NOT_FOUND);
+                }
+
+                $exercises = $course_class->exercises()
+                    ->with(['topics', 'language'])
+                    ->paginate(15);
+            }
+            
             return ExerciseResource::collection($exercises);
         } catch (Exception $e) {
             return response()->json([
