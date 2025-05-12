@@ -35,9 +35,9 @@ class JudgeController extends Controller
             ->where('exercise_id', $exerciseId)
             ->first();
 
-        if (!$courseExercise) {
-            return response()->json(['success' => false, 'message' => 'Không tìm thấy bài tập'], 404);
-        }
+//        if (!$courseExercise) {
+//            return response()->json(['success' => false, 'message' => 'Không tìm thấy bài tập'], 404);
+//        }
 
         if ($mode === 'submit' && !$courseExercise->is_active) {
             return response()->json(['success' => false, 'message' => 'Bài tập đã đóng'], 403);
@@ -49,11 +49,11 @@ class JudgeController extends Controller
         }
 
         $language = $exercise->language()->first();
-        if (!$language) {
-            return response()->json(['success' => false, 'message' => 'Ngôn ngữ không hợp lệ'], 400);
-        }
+//        if (!$language) {
+//            return response()->json(['success' => false, 'message' => 'Ngôn ngữ không hợp lệ'], 400);
+//        }
 
-        $testCases = json_decode($exercise->test_cases, true);
+        $testCases = $exercise->test_cases;
         if (empty($testCases)) {
             return response()->json(['success' => false, 'message' => 'Không có test case'], 400);
         }
@@ -63,7 +63,8 @@ class JudgeController extends Controller
         foreach ($testCases as $test) {
             $submissionData = [
                 'source_code'    => $sourceCode,
-                'language_id'    => $language->judge_language_id,
+                'language_id'    => $language ? $language->judge_language_id : 2,
+//                'language_id'    => 2,
                 'stdin'          => $test['stdin'],
                 'expected_output'=> $test['expected_output'],
                 'cpu_time_limit' => $exercise->time_limit,

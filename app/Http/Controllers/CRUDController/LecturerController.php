@@ -40,6 +40,7 @@ class LecturerController extends Controller
         try {
             $validated = $request->validate([
                 'email' => 'required|string|max:255|unique:users',
+                'role' => 'required|string',
                 'name' => 'required|string|max:255',
                 'password' => 'required|string|min:8'
             ]);

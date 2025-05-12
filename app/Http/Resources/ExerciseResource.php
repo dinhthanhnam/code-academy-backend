@@ -21,7 +21,7 @@ class ExerciseResource extends JsonResource
             'level' => $this->level,
             'example_input' => $this->example_input,
             'example_output' => $this->example_output,
-            'test_cases' => $this->test_cases,
+            'test_cases' => is_string($this->test_cases) ? json_decode($this->test_cases, true) : $this->test_cases,
             'is_free' => $this->is_free,
             'time_limit' => $this->time_limit,
             'memory_limit' => $this->memory_limit,
