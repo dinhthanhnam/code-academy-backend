@@ -38,7 +38,8 @@ class AuthController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Đăng ký thành công!'
+            'message' => 'Đăng ký thành công!',
+            'user' => $user
         ]);
     }
 
@@ -60,7 +61,8 @@ class AuthController extends Controller
             $user = Auth::user();
             return response()->json([
                 'success' => true,
-                'message' => 'Đăng nhập thành công!'
+                'message' => 'Đăng nhập thành công!',
+                'user' => $user
             ]);
         }
 
@@ -102,7 +104,7 @@ class AuthController extends Controller
                 'message' => 'Lấy vai trò thất bại'
             ], 401);
         }
-    
+
         $user = Auth::user();
         return response()->json([
             'success' => true,
